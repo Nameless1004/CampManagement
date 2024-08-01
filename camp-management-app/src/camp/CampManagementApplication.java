@@ -180,7 +180,17 @@ public class CampManagementApplication {
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
-        System.out.println("\n수강생 목록 조회 성공!");
+        if(studentStore.isEmpty()) {
+            System.out.println("등록된 수강생이 없습니다.");
+            System.out.println("수강생 목록 조회 종료.");
+        }
+        else {
+            for (Student student : studentStore) {
+                System.out.println("학생 고유 번호: " + student.getStudentId());
+                System.out.println("학생 이름 : " + student.getStudentName());
+            }
+            System.out.println("\n수강생 목록 조회 성공!");
+        }
     }
 
     private static void displayScoreView() {
