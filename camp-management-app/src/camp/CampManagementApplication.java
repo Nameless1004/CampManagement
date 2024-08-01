@@ -225,10 +225,74 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
+        // -----------------Test------------------------
+        studentStore.add( new Student(sequence(INDEX_TYPE_STUDENT), "jaeho"));
+        var student = studentStore.getFirst();
+        student.addSubject(subjectStore.get(0));
+        student.addSubject(subjectStore.get(4));
+        student.addSubject(subjectStore.get(3));
+        student.addSubject(subjectStore.get(2));
+        student.addSubject(subjectStore.get(1));
+        // ---------------------------------------------
+
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
-        // 기능 구현
+        List<Subject> subjectList = getSubjectListByStudent(studentId);
+        printSubjectLists(studentId);
+
+        System.out.print("등록할 과목을 선택해주세요(id 입력): ");
+        String selectedSubjectId = sc.next();
+        Subject selectedSubject = subjectList.stream().filter(x->x.getSubjectId().equals(selectedSubjectId)).findFirst().orElse(null);
+
+        int round = 0;
+        while(true){
+            System.out.print("등록할 회차를 입력해주세요: ");
+            round = Integer.parseInt(sc.next());
+            List<Score> scoreList = getScoreListByStudent(studentId);
+            int temp = round;
+            if(scoreList.stream().anyMatch(x-> x.getSubjectId().equals(selectedSubject.getSubjectId()) && x.getRound() == temp )){
+                System.out.println("동일 회차가 결과가 등록되어있습니다.");
+            } else if(round < 0 || round > 10) {
+                System.out.println("회차의 범위는 1 ~ 10회 입니다.");
+            } else {
+                    break;
+            }
+        }
+
+        int score = 0;
+        while(true){
+            System.out.print("등록할 점수를 입력해주세요: ");
+            score = Integer.parseInt(sc.next());
+            if(score < 0 || score > 100){
+                System.out.println("점수의 범위는 0 ~ 100점 입니다.");
+            } else {
+                break;
+            }
+        }
+
+        Score scoreData = new Score(studentId, selectedSubject.getSubjectId(), selectedSubject.getSubjectType(), round, score);
+        scoreStore.add(scoreData);
+
+        // Test
+        System.out.println("scoreData = " + scoreData.toString());
+
         System.out.println("\n점수 등록 성공!");
+    }
+
+
+    // 특정학생이 수강중인 과목 목록 출력
+    private static void printSubjectLists(String studentId) {
+        List<Subject> subjectList = getSubjectListByStudent(studentId);
+        System.out.println("---------------------------------");
+        System.out.println( "【 "+"\u001B[34m"+studentId +"\u001B[0m"+" 】 " + "수강 과목 리스트");
+        System.out.println("---------------------------------");
+        for(int i = 0; i < subjectList.size(); i++) {
+            Subject subject = subjectList.get(i);
+            System.out.printf("   %-4s   |", subject.getSubjectId());
+            System.out.printf("  %-2s  |", subject.getSubjectTypeKorean());
+            System.out.printf("   %-6s    %n", subject.getSubjectName());
+            System.out.println("---------------------------------");
+        }
     }
 
     // 수강생의 과목별 회차 점수 수정
@@ -247,6 +311,22 @@ public class CampManagementApplication {
         System.out.println("회차별 등급을 조회합니다...");
         // 기능 구현
         System.out.println("\n등급 조회 성공!");
+    }
+
+    // 학생아이디로 수강중인 과목 목록 가져오기
+    private static List<Subject> getSubjectListByStudent(String studentId){
+        for(Student student : studentStore){
+            if(student.getStudentId().equals(studentId)){
+                return student.getSubjectList();
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
+    // 학생아이디로 점수 데이터들 가져오기
+    private static List<Score> getScoreListByStudent(String studentId){
+        return scoreStore.stream().filter(x->x.getStudentId().equals(studentId)).toList();
     }
 
 }
