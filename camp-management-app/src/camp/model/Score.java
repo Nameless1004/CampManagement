@@ -8,10 +8,10 @@ public class Score {
     private int score;
     private String grade;
 
-    public Score(String subjectId, String subjectType, String studentId, int round, int score, String grade) {
+    public Score(String studentId, String subjectId, String subjectType, int round, int score) {
+        this.studentId = studentId;
         this.subjectId = subjectId;
         this.subjectType = subjectType;
-        this.studentId = studentId;
         this.round = round;
         this.score = score;
         this.grade = convertToGrade(score);
@@ -74,5 +74,17 @@ public class Score {
 
     public String getGrade() {
         return grade;
+    }
+
+    @Override
+    public String toString() {
+        return "Score{" +
+                "subjectId='" + subjectId + '\'' +
+                ", subjectType='" + subjectType + '\'' +
+                ", studentId='" + studentId + '\'' +
+                ", round=" + round +
+                ", score=" + score +
+                ", grade='" + grade + '\'' +
+                '}';
     }
 }

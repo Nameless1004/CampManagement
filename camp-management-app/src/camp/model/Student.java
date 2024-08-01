@@ -11,7 +11,7 @@ public class Student {
     public Student(String seq, String studentName) {
         this.studentId = seq;
         this.studentName = studentName;
-        List<Subject> subjectList = new ArrayList<Subject>();
+        this.subjectList = new ArrayList<Subject>();
     }
 
     // Getter
