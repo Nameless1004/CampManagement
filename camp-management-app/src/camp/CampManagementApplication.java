@@ -34,7 +34,7 @@ public class CampManagementApplication {
     private static int scoreIndex;
     private static final String INDEX_TYPE_SCORE = "SC";
 
-    // 스캐너
+    // 스캐너 
     private static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
