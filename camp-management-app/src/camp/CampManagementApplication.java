@@ -227,12 +227,13 @@ public class CampManagementApplication {
     private static void createScore() {
         // -----------------Test------------------------
         studentStore.add( new Student(sequence(INDEX_TYPE_STUDENT), "jaeho"));
-        var student = studentStore.getFirst();
+        var student = studentStore.get(0);
         student.addSubject(subjectStore.get(0));
         student.addSubject(subjectStore.get(4));
         student.addSubject(subjectStore.get(3));
         student.addSubject(subjectStore.get(2));
         student.addSubject(subjectStore.get(1));
+        printStudentList();
         // ---------------------------------------------
 
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
@@ -279,6 +280,19 @@ public class CampManagementApplication {
         System.out.println("\n점수 등록 성공!");
     }
 
+
+    // 특정학생이 수강중인 과목 목록 출력
+    private static void printStudentList() {
+        System.out.println("---------------------------------");
+        System.out.println( "【 "+"\u001B[34m"+ "수강생 리스트 ( ID | NAME )" + "\u001B[0m"+" 】 ");
+        System.out.println("---------------------------------");
+        for(int i = 0; i < studentStore.size(); i++) {
+            Student subject = studentStore.get(i);
+            System.out.printf("   %-4s   |", subject.getStudentId());
+            System.out.printf("  %-6s  %n", subject.getStudentName());
+            System.out.println("---------------------------------");
+        }
+    }
 
     // 특정학생이 수강중인 과목 목록 출력
     private static void printSubjectLists(String studentId) {
