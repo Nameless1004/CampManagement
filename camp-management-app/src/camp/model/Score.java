@@ -76,6 +76,11 @@ public class Score {
         return grade;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+        this.grade = convertToGrade(score);
+    }
+
     @Override
     public String toString() {
         return "Score{" +

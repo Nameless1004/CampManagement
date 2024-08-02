@@ -6,6 +6,7 @@ import camp.model.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -180,11 +181,10 @@ public class CampManagementApplication {
     private static void inquireStudent() {
         System.out.println("\n수강생 목록을 조회합니다...");
         // 기능 구현
-        if(studentStore.isEmpty()) {
+        if (studentStore.isEmpty()) {
             System.out.println("등록된 수강생이 없습니다.");
             System.out.println("수강생 목록 조회 종료.");
-        }
-        else {
+        } else {
             for (Student student : studentStore) {
                 System.out.println("학생 고유 번호: " + student.getStudentId());
                 System.out.println("학생 이름 : " + student.getStudentName());
@@ -226,7 +226,7 @@ public class CampManagementApplication {
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
         // -----------------Test------------------------
-        studentStore.add( new Student(sequence(INDEX_TYPE_STUDENT), "jaeho"));
+        studentStore.add(new Student(sequence(INDEX_TYPE_STUDENT), "jaeho"));
         var student = studentStore.get(0);
         student.addSubject(subjectStore.get(0));
         student.addSubject(subjectStore.get(4));
@@ -243,28 +243,28 @@ public class CampManagementApplication {
 
         System.out.print("등록할 과목을 선택해주세요(id 입력): ");
         String selectedSubjectId = sc.next();
-        Subject selectedSubject = subjectList.stream().filter(x->x.getSubjectId().equals(selectedSubjectId)).findFirst().orElse(null);
+        Subject selectedSubject = subjectList.stream().filter(x -> x.getSubjectId().equals(selectedSubjectId)).findFirst().orElse(null);
 
         int round = 0;
-        while(true){
+        while (true) {
             System.out.print("등록할 회차를 입력해주세요: ");
             round = Integer.parseInt(sc.next());
             List<Score> scoreList = getScoreListByStudent(studentId);
             int temp = round;
-            if(scoreList.stream().anyMatch(x-> x.getSubjectId().equals(selectedSubject.getSubjectId()) && x.getRound() == temp )){
+            if (scoreList.stream().anyMatch(x -> x.getSubjectId().equals(selectedSubject.getSubjectId()) && x.getRound() == temp)) {
                 System.out.println("동일 회차가 결과가 등록되어있습니다.");
-            } else if(round < 0 || round > 10) {
+            } else if (round < 0 || round > 10) {
                 System.out.println("회차의 범위는 1 ~ 10회 입니다.");
             } else {
-                    break;
+                break;
             }
         }
 
         int score = 0;
-        while(true){
+        while (true) {
             System.out.print("등록할 점수를 입력해주세요: ");
             score = Integer.parseInt(sc.next());
-            if(score < 0 || score > 100){
+            if (score < 0 || score > 100) {
                 System.out.println("점수의 범위는 0 ~ 100점 입니다.");
             } else {
                 break;
@@ -284,9 +284,9 @@ public class CampManagementApplication {
     // 특정학생이 수강중인 과목 목록 출력
     private static void printStudentList() {
         System.out.println("---------------------------------");
-        System.out.println( "【 "+"\u001B[34m"+ "수강생 리스트 ( ID | NAME )" + "\u001B[0m"+" 】 ");
+        System.out.println("【 " + "\u001B[34m" + "수강생 리스트 ( ID | NAME )" + "\u001B[0m" + " 】 ");
         System.out.println("---------------------------------");
-        for(int i = 0; i < studentStore.size(); i++) {
+        for (int i = 0; i < studentStore.size(); i++) {
             Student subject = studentStore.get(i);
             System.out.printf("   %-4s   |", subject.getStudentId());
             System.out.printf("  %-6s  %n", subject.getStudentName());
@@ -298,9 +298,9 @@ public class CampManagementApplication {
     private static void printSubjectLists(String studentId) {
         List<Subject> subjectList = getSubjectListByStudent(studentId);
         System.out.println("---------------------------------");
-        System.out.println( "【 "+"\u001B[34m"+studentId +"\u001B[0m"+" 】 " + "수강 과목 리스트");
+        System.out.println("【 " + "\u001B[34m" + studentId + "\u001B[0m" + " 】 " + "수강 과목 리스트");
         System.out.println("---------------------------------");
-        for(int i = 0; i < subjectList.size(); i++) {
+        for (int i = 0; i < subjectList.size(); i++) {
             Subject subject = subjectList.get(i);
             System.out.printf("   %-4s   |", subject.getSubjectId());
             System.out.printf("  %-2s  |", subject.getSubjectTypeKorean());
@@ -311,11 +311,61 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() {
+        printStudentList();
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
+        printSubjectLists(studentId);
         // 기능 구현 (수정할 과목 및 회차, 점수)
+        System.out.println("수정할 과목의 고유 번호를 써주세요.");
+        System.out.print("번호 : ");
+        // 과목의 고유 번호 얻음
+        String input1 = sc.next();
+
+//
+
+
+        int input2 = 0;
+        while (true) {
+            System.out.println("수정할 과목의 회차 번호를 써주세요.");
+            System.out.println("(회차 범위: 1 ~ 10)");
+            System.out.print("번호 : ");
+            input2 = sc.nextInt();
+            if (input2 < 0 || input2 > 10) {
+                System.out.println("회차의 범위는 1 ~ 10 입니다.");
+            } else {
+                break;
+            }
+        }
+
+        int input3 = 0;
+        while (true) {
+            System.out.println("점수를 써주세요.");
+            System.out.println("(점수 범위: 0 ~ 100)");
+            System.out.print("점수 : ");
+            input3 = sc.nextInt();
+            if (input3 < 0 || input3 > 100) {
+                System.out.println("점수의 범위는 0 ~ 100점 입니다.");
+            } else {
+                break;
+            }
+        }
         System.out.println("시험 점수를 수정합니다...");
         // 기능 구현
-        System.out.println("\n점수 수정 성공!");
+        // var 부분을 뭘로 구현해야 제대로 실행되는 지 모르겠음.
+        // 오류 처리 어떻게 진행할지 확인하기
+        int finalInput = input2;
+        Optional<Score> result = scoreStore.stream()
+                .filter(x -> x.getStudentId().equals(studentId) &&
+                        x.getSubjectId().equals(input1) &&
+                        x.getRound() == finalInput)
+                .findFirst();
+        //
+        if (result.isPresent()) { // 값이 있냐 없냐
+            result.get().setScore(input3); // 값이 있는지 없는지 확인을 했기 떄문에 get()을 바로 쓸 수 있음
+            System.out.println("점수 수정 성공!");
+            System.out.println("과목 고유번호 : " + input1 + "  " + "회차 번호 : " + input2 + "  " + "수정된 점수 : " + input3);
+        } else {
+            System.out.println("점수 수정에 실패했습니다.");
+        }
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
@@ -328,9 +378,9 @@ public class CampManagementApplication {
     }
 
     // 학생아이디로 수강중인 과목 목록 가져오기
-    private static List<Subject> getSubjectListByStudent(String studentId){
-        for(Student student : studentStore){
-            if(student.getStudentId().equals(studentId)){
+    private static List<Subject> getSubjectListByStudent(String studentId) {
+        for (Student student : studentStore) {
+            if (student.getStudentId().equals(studentId)) {
                 return student.getSubjectList();
             }
         }
@@ -339,8 +389,8 @@ public class CampManagementApplication {
     }
 
     // 학생아이디로 점수 데이터들 가져오기
-    private static List<Score> getScoreListByStudent(String studentId){
-        return scoreStore.stream().filter(x->x.getStudentId().equals(studentId)).toList();
+    private static List<Score> getScoreListByStudent(String studentId) {
+        return scoreStore.stream().filter(x -> x.getStudentId().equals(studentId)).toList();
     }
 
 }
