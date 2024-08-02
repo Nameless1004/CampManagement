@@ -5,6 +5,7 @@ import camp.model.Student;
 import camp.model.Subject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -370,13 +371,33 @@ public class CampManagementApplication {
 
     // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        // 기능 구현 (조회할 특정 과목)
-        System.out.println("회차별 등급을 조회합니다...");
-        // 기능 구현
-        System.out.println("\n등급 조회 성공!");
-    }
+        printStudentList();
+        String studentId = getStudentId();
 
+        // 조회할 과목 선택
+        printSubjectLists(studentId);
+        System.out.println("조회할 과목을 선택해주세요.(과목 ID 입력): ");
+        String selectSubjectId = sc.next();
+
+        // 스코어 저장해둘 리스트 생성
+        ArrayList<Score> scoreList = new ArrayList<>();
+        for (int i = 0; i < scoreStore.size(); ++i) {
+            // 현재스코어
+            Score currentScore = scoreStore.get(i);
+            if ( currentScore.getStudentId().equals(studentId) && currentScore.getSubjectId().equals(selectSubjectId)) {
+                scoreList.add(currentScore);
+            }
+        }
+
+        scoreList.sort(Comparator.comparingInt(Score::getRound));
+        for (int i = 0; i < scoreList.size(); ++i) {
+            Score currentScore = scoreList.get(i);
+            int round = currentScore.getRound();
+            String grade = currentScore.getGrade();
+            System.out.println(round + "회차 : " + grade + "등급");
+        }
+        System.out.println("회차별 등급을 조회합니다...");
+    }
     // 학생아이디로 수강중인 과목 목록 가져오기
     private static List<Subject> getSubjectListByStudent(String studentId) {
         for (Student student : studentStore) {
