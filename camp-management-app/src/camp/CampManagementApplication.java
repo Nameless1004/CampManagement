@@ -226,17 +226,6 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
-        // -----------------Test------------------------
-        studentStore.add(new Student(sequence(INDEX_TYPE_STUDENT), "jaeho"));
-        var student = studentStore.get(0);
-        student.addSubject(subjectStore.get(0));
-        student.addSubject(subjectStore.get(4));
-        student.addSubject(subjectStore.get(3));
-        student.addSubject(subjectStore.get(2));
-        student.addSubject(subjectStore.get(1));
-        printStudentList();
-        // ---------------------------------------------
-
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
         List<Subject> subjectList = getSubjectListByStudent(studentId);
@@ -274,9 +263,6 @@ public class CampManagementApplication {
 
         Score scoreData = new Score(studentId, selectedSubject.getSubjectId(), selectedSubject.getSubjectType(), round, score);
         scoreStore.add(scoreData);
-
-        // Test
-        System.out.println("scoreData = " + scoreData.toString());
 
         System.out.println("\n점수 등록 성공!");
     }
