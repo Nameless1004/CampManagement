@@ -1,19 +1,13 @@
-package camp.model;
+package camp.dto;
 
-public class Subject {
-    private String subjectId;
+public class SubjectSTO {
+    private Long studentId;
     private String subjectName;
     private String subjectType;
 
-    public Subject(String seq, String subjectName, String subjectType) {
-        this.subjectId = seq;
+    public SubjectSTO(String subjectName, String subjectType) {
         this.subjectName = subjectName;
         this.subjectType = subjectType;
-    }
-
-    // Getter
-    public String getSubjectId() {
-        return subjectId;
     }
 
     public String getSubjectName() {
@@ -24,4 +18,7 @@ public class Subject {
         return subjectType;
     }
 
+    public SubjectSTO clone(SubjectSTO subject) {
+        return new SubjectSTO(subjectName, subjectType);
+    }
 }
