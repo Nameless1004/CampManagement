@@ -11,4 +11,6 @@ public interface SubjectRepository {
     void save(Subject subject);
     Optional<List<SubjectDTO>> findAllById(Long studentId);
     boolean isEmpty();
+
+    Optional<SubjectDTO> find(Long studentId, String subjectName);
 }

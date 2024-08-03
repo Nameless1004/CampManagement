@@ -4,6 +4,11 @@ public class Student {
     private Long id;
     private String name;
 
+    public Student(String name){
+        id = null;
+        this.name = name;
+    }
+
     public Student(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -15,5 +20,9 @@ public class Student {
 
     public String getName() {
         return name;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

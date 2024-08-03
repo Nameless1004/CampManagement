@@ -9,19 +9,35 @@ import java.util.Optional;
 
 public class ScoreRepositoryImpl implements ScoreRepository{
 
-    private long index = 0;
+    private Long index = 0L;
     private HashMap<Long, Score> scores = new HashMap<>();
 
     @Override
     public void save(Score score) {
-        Long studentId = score.getStudentId();
         score.setScoreId(++index);
         scores.put(index, score);
     }
 
     @Override
     public Optional<List<ScoreDTO>> findAllById(Long studentId) {
-        List<ScoreDTO> result = scores.values().stream().filter(x->x.getStudentId().longValue() == studentId.longValue()).map(ScoreDTO::toDTO).toList();
+        List<ScoreDTO> result = scores.values().
+                stream().
+                filter(x->x.getStudentId().longValue() == studentId.longValue()).
+                map(ScoreDTO::toDTO).
+                toList();
+        if(result.isEmpty()) return Optional.empty();
+
+        return Optional.of(result);
+    }
+
+    @Override
+    public Optional<List<ScoreDTO>> findAllByIdAndSubjectName(Long studentId, String subjectName) {
+        List<ScoreDTO> result = scores.values().
+                stream().
+                filter(x->x.getStudentId().longValue() == studentId.longValue() &&
+                        x.getSubjectName().equals(subjectName)).
+                map(ScoreDTO::toDTO).
+                toList();
         if(result.isEmpty()) return Optional.empty();
 
         return Optional.of(result);
