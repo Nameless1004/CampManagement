@@ -1,6 +1,7 @@
 package camp.service;
 
 import camp.dto.StudentDTO;
+import camp.entity.Student;
 
 import java.util.List;
 

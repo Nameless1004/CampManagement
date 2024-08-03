@@ -4,6 +4,12 @@ import java.util.Scanner;
 
 public class CampManagementApplication {
     Scanner sc = new Scanner(System.in);
+
+    // 어플리케이션 시작
+    public void start() {
+
+    }
+
     private void displayMainView() throws InterruptedException {
         boolean flag = true;
         while (flag) {

@@ -1,15 +1,12 @@
 package camp.repository;
 
 import camp.dto.StudentDTO;
-import camp.dto.SubjectSTO;
+import camp.entity.Student;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface StudentRepository{
-
-    void save(StudentDTO student);
-    void save(StudentDTO student, List<SubjectSTO> subjects);
-    StudentDTO findById(String studentId);
-    List<SubjectSTO> findSubjectsById(String studentId);
+    void save(Student student);
+    Optional<StudentDTO> findById(Long studentId);
     boolean isEmpty();
 }

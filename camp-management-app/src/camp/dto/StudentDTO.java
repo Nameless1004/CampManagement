@@ -1,27 +1,28 @@
 package camp.dto;
 
+import camp.entity.Score;
+import camp.entity.Student;
+
 public class StudentDTO {
-    private Long studentId;
-    private String studentName;
+    private Long id;
+    private String name;
 
-    public StudentDTO(String studentName) {
-        this.studentName = studentName;
+    public StudentDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    // Getter
-    public Long getStudentId() {
-        return studentId;
+    public Long getId() {
+        return id;
     }
 
-    public String getStudentName() {
-        return studentName;
+    public String getName() {
+        return name;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public static StudentDTO toDTO(Student student) {
+        StudentDTO dto = new StudentDTO(student.getId(), student.getName());
+        return dto;
     }
 }

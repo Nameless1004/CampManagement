@@ -1,67 +1,53 @@
 package camp.dto;
 
+import camp.entity.Score;
+import camp.entity.Student;
+
+import java.util.List;
+
 public class ScoreDTO {
+    private Long scoreId;
     private Long studentId;
     private String subjectName;
-    private String subjectType;
-    private Integer round;
-    private Integer score;
+    private int round;
+    private int score;
     private String grade;
 
-    public ScoreDTO(Long studentId, String subjectName, String subjectType, Integer round, Integer score, String grade) {
+    public ScoreDTO( Long scoreId, Long studentId, String subjectName, int round, int score, String grade) {
+        this.scoreId = scoreId;
         this.studentId = studentId;
         this.subjectName = subjectName;
-        this.subjectType = subjectType;
         this.round = round;
         this.score = score;
-        converToGrade(score);
-    }
-
-    public Long getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
+        this.grade = grade;
     }
 
     public String getSubjectName() {
         return subjectName;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
-
-    public String getSubjectType() {
-        return subjectType;
-    }
-
-    public void setSubjectType(String subjectType) {
-        this.subjectType = subjectType;
-    }
-
-    public Integer getRound() {
+    public int getRound() {
         return round;
     }
 
-    public void setRound(Integer round) {
-        this.round = round;
-    }
-
-    public Integer getScore() {
+    public int getScore() {
         return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
     }
 
     public String getGrade() {
         return grade;
     }
 
-    public void converToGrade(int score) {
-        this.grade = grade;
+    public Long getScoreId() {
+        return scoreId;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public static ScoreDTO toDTO(Score score) {
+        ScoreDTO dto = new ScoreDTO(score.getScoreId(), score.getStudentId(), score.getSubjectName(), score.getRound(), score.getScore(), score.getGrade());
+        return dto;
     }
 }
