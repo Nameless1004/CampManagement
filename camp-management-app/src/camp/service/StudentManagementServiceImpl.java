@@ -1,7 +1,5 @@
 package camp.service;
 
-import camp.dto.StudentDTO;
-import camp.dto.SubjectDTO;
 import camp.entity.Student;
 import camp.entity.Subject;
 import camp.repository.StudentRepository;
@@ -11,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class StudentManagementServiceImpl implements StudentManagementService {
+
     StudentRepository studentRepository;
     SubjectRepository subjectRepository;
 
@@ -30,17 +29,18 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
-    public Optional<SubjectDTO> findSubject(Long studentId, String subjectName) {
+    public Optional<Subject> findSubject(Long studentId, String subjectName) {
         return subjectRepository.find(studentId, subjectName);
     }
 
 
     @Override
     public void inquireSubjects(Long studentId) {
-        Optional<List<SubjectDTO>> result = subjectRepository.findAllById(studentId);
+        System.out.println("studentId: " + studentId + "의 수강 과목 리스트");
+        Optional<List<Subject>> result = subjectRepository.findAllById(studentId);
         if(result.isPresent()) {
-            List<SubjectDTO> subjects = result.get();
-            for(SubjectDTO subject : subjects) {
+            List<Subject> subjects = result.get();
+            for(Subject subject : subjects) {
                 System.out.println("SubjectName: " + subject.getName() + " SubjectType: " + subject.getType());
             }
         }
@@ -51,15 +51,34 @@ public class StudentManagementServiceImpl implements StudentManagementService {
 
     @Override
     public void inquireStudents(){
-        Optional<List<StudentDTO>> findall = studentRepository.findAll();
+        System.out.println("- 수강생 목록 -");
+        Optional<List<Student>> findall = studentRepository.findAll();
         if(findall.isPresent()){
-            List<StudentDTO> students = findall.get();
-            for(StudentDTO student : students){
+            List<Student> students = findall.get();
+            for(Student student : students){
                 System.out.println("ID: " + student.getId() + " / " + "Name: " + student.getName());
             }
         }
         else{
             System.out.println("등록된 학생들이 없습니다.");
         }
+    }
+
+    @Override
+    public boolean containsSubject(Long studentId, String subjectName) {
+        Optional<List<Subject>> find = subjectRepository.findAllById(studentId);
+        if(find.isEmpty()) return false;
+        List<Subject> subjects = find.get();
+        for(Subject subject : subjects){
+            if(subject.getName().equals(subjectName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isValidStudentId(Long studentId) {
+        return studentRepository.findById(studentId).isPresent();
     }
 }

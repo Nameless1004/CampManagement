@@ -1,11 +1,11 @@
 package camp.repository;
 
-import camp.dto.ScoreDTO;
 import camp.entity.Score;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ScoreRepositoryImpl implements ScoreRepository{
 
@@ -19,11 +19,10 @@ public class ScoreRepositoryImpl implements ScoreRepository{
     }
 
     @Override
-    public Optional<List<ScoreDTO>> findAllById(Long studentId) {
-        List<ScoreDTO> result = scores.values().
+    public Optional<List<Score>> findAllById(Long studentId) {
+        List<Score> result = scores.values().
                 stream().
                 filter(x->x.getStudentId().longValue() == studentId.longValue()).
-                map(ScoreDTO::toDTO).
                 toList();
         if(result.isEmpty()) return Optional.empty();
 
@@ -31,25 +30,24 @@ public class ScoreRepositoryImpl implements ScoreRepository{
     }
 
     @Override
-    public Optional<List<ScoreDTO>> findAllByIdAndSubjectName(Long studentId, String subjectName) {
-        List<ScoreDTO> result = scores.values().
+    public Optional<List<Score>> findAllByIdAndSubjectName(Long studentId, String subjectName) {
+        List<Score> result = scores.values().
                 stream().
                 filter(x->x.getStudentId().longValue() == studentId.longValue() &&
                         x.getSubjectName().equals(subjectName)).
-                map(ScoreDTO::toDTO).
-                toList();
+                collect(Collectors.toList());
         if(result.isEmpty()) return Optional.empty();
 
         return Optional.of(result);
     }
 
     @Override
-    public Optional<ScoreDTO> find(Long studentId, String subjectName, int round) {
+    public Optional<Score> find(Long studentId, String subjectName, int round) {
         for(Score score : scores.values()) {
             if(score.getStudentId().longValue() == studentId.longValue() &&
                 score.getSubjectName().equals(subjectName) &&
                 score.getRound() == round) {
-                return Optional.of(ScoreDTO.toDTO(score));
+                return Optional.of(score);
             }
         }
         return Optional.empty();

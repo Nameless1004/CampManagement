@@ -1,6 +1,5 @@
 package camp.repository;
 
-import camp.dto.StudentDTO;
 import camp.entity.Student;
 
 import java.util.HashMap;
@@ -19,9 +18,9 @@ public class StudentRepositoryImpl implements StudentRepository{
 
     // Optional Empty이면 studentId가 등록 안되어있는 것.
     @Override
-    public Optional<StudentDTO> findById(Long studentId) {
+    public Optional<Student> findById(Long studentId) {
         if(students.containsKey(studentId)){
-            return Optional.of(StudentDTO.toDTO(students.get(studentId)));
+            return Optional.of(students.get(studentId));
         }
         return Optional.empty();
     }
@@ -32,11 +31,11 @@ public class StudentRepositoryImpl implements StudentRepository{
     }
 
     @Override
-    public Optional<List<StudentDTO>> findAll() {
+    public Optional<List<Student>> findAll() {
         if(students.isEmpty()){
             return Optional.empty();
         }
 
-        return Optional.of(students.values().stream().map(StudentDTO::toDTO).toList());
+        return Optional.of(students.values().stream().toList());
     }
 }

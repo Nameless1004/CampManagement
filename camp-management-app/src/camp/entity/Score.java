@@ -1,13 +1,11 @@
 package camp.entity;
 
-import camp.dto.ScoreDTO;
-
 public class Score {
+    private final Long studentId;
+    private final String subjectName;
+    private final String subjectType;
+    private final Integer round;
     private Long scoreId;
-    private Long studentId;
-    private String subjectName;
-    private String subjectType;
-    private Integer round;
     private Integer score;
     private String grade;
 
@@ -36,8 +34,21 @@ public class Score {
         return round;
     }
 
+    public Long getScoreId() {
+        return scoreId;
+    }
+
+    public void setScoreId(Long scoreId) {
+        this.scoreId = scoreId;
+    }
+
     public Integer getScore() {
         return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+        converToGrade(score);
     }
 
     public String getGrade() {
@@ -45,32 +56,36 @@ public class Score {
     }
 
     public void converToGrade(int score) {
-        this.grade = grade;
-    }
-
-    public boolean compByValues(Score comp){
-        if (comp.getStudentId().longValue() == this.studentId.longValue() &&
-                comp.getSubjectName().equals(this.subjectName) &&
-                comp.getSubjectType().equals(this.subjectType) &&
-                comp.getGrade().equals(this.grade) &&
-                comp.getRound().intValue() == this.round.intValue() &&
-                comp.getScore().intValue() == this.score.intValue()) {
-            return true;
+        String grade = "";
+        if (subjectType.equals("MANDATORY")) {
+            if (95 <= score) {
+                grade = "A";
+            } else if (90 <= score) {
+                grade = "B";
+            } else if (80 <= score) {
+                grade = "C";
+            } else if (70 <= score) {
+                grade = "D";
+            } else if (60 <= score) {
+                grade = "F";
+            } else {
+                grade = "N";
+            }
+        } else {
+            if (90 <= score) {
+                grade = "A";
+            } else if (80 <= score) {
+                grade = "B";
+            } else if (70 <= score) {
+                grade = "C";
+            } else if (60 <= score) {
+                grade = "D";
+            } else if (50 <= score) {
+                grade = "F";
+            } else {
+                grade = "N";
+            }
         }
-
-        return false;
-    }
-
-    public Long getScoreId(){
-        return scoreId;
-    }
-
-    public void setScore(int score){
-        this.score = score;
-        converToGrade(score);
-    }
-
-    public void setScoreId(Long scoreId) {
-        this.scoreId = scoreId;
+        this.grade = grade;
     }
 }

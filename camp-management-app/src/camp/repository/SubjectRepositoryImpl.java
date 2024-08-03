@@ -1,8 +1,4 @@
 package camp.repository;
-
-import camp.dto.SubjectDTO;
-import camp.entity.Score;
-import camp.entity.Student;
 import camp.entity.Subject;
 
 import java.util.ArrayList;
@@ -28,9 +24,9 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public Optional<List<SubjectDTO>> findAllById(Long studentId) {
+    public Optional<List<Subject>> findAllById(Long studentId) {
         if(subjects.containsKey(studentId)) {
-            return Optional.of(subjects.get(studentId).stream().map(SubjectDTO::toDTO).toList());
+            return Optional.of(subjects.get(studentId).stream().toList());
         }
 
         return Optional.empty();
@@ -42,9 +38,9 @@ public class SubjectRepositoryImpl implements SubjectRepository {
     }
 
     @Override
-    public Optional<SubjectDTO> find(Long studentId, String subjectName) {
+    public Optional<Subject> find(Long studentId, String subjectName) {
         if(subjects.containsKey(studentId)) {
-            return subjects.get(studentId).stream().map(SubjectDTO::toDTO).filter(x->x.getName().equals(subjectName)).findFirst();
+            return subjects.get(studentId).stream().filter(x->x.getName().equals(subjectName)).findFirst();
         }
 
         return Optional.empty();

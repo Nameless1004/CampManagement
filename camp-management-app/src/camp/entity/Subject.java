@@ -2,25 +2,25 @@ package camp.entity;
 
 public class Subject {
     private Long studentId;
-    private String subjectName;
-    private String subjectType;
+    private String name;
+    private String type;
 
     public Subject(Long studentId, String subjectName, String subjectType) {
         this.studentId = studentId;
-        this.subjectName = subjectName;
-        this.subjectType = subjectType;
+        this.name = subjectName;
+        this.type = subjectType;
     }
 
     public Long getStudentId() {
         return studentId;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public String getName() {
+        return name;
     }
 
-    public String getSubjectType() {
-        return subjectType;
+    public String getType() {
+        return type;
     }
 
 }

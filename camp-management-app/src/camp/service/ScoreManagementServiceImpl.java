@@ -1,8 +1,7 @@
 package camp.service;
 
-import camp.dto.ScoreDTO;
-import camp.dto.StudentDTO;
 import camp.entity.Score;
+import camp.entity.Student;
 import camp.repository.ScoreRepository;
 import camp.repository.StudentRepository;
 
@@ -28,7 +27,7 @@ public class ScoreManagementServiceImpl implements ScoreManagementService {
 
     @Override
     public void update(Long studentId, String subjectName, int round, int score) {
-        Optional<ScoreDTO> scoreDTO = scoreRepository.find(studentId, subjectName, round);
+        Optional<Score> scoreDTO = scoreRepository.find(studentId, subjectName, round);
         // find == null 이면 해당없음
         scoreDTO.ifPresentOrElse( (dto)-> scoreRepository.update(dto.getScoreId(), score),
                 ()->{
@@ -38,13 +37,13 @@ public class ScoreManagementServiceImpl implements ScoreManagementService {
 
     @Override
     public void inquireRoundGradeBySubject(Long studentId, String subjectName) {
-        Optional<List<ScoreDTO>> allByIdAndSubjectName = scoreRepository.findAllByIdAndSubjectName(studentId, subjectName);
+        Optional<List<Score>> allByIdAndSubjectName = scoreRepository.findAllByIdAndSubjectName(studentId, subjectName);
         if(allByIdAndSubjectName.isPresent()) {
-            List<ScoreDTO> find = allByIdAndSubjectName.get();
+            List<Score> find = allByIdAndSubjectName.get();
             // 회 차 값으로 정렬
-            find.sort(Comparator.comparingInt(ScoreDTO::getRound));
-            for(ScoreDTO scoreDTO : find) {
-                Optional<StudentDTO> student = studentRepository.findById(studentId);
+            find.sort((x,y)->x.getRound().compareTo(y.getRound()));
+            for(Score scoreDTO : find) {
+                Optional<Student> student = studentRepository.findById(studentId);
                 if(student.isPresent()) {
                     String name = student.get().getName();
                     int round =  scoreDTO.getRound();

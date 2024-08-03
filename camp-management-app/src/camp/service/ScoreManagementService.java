@@ -1,6 +1,5 @@
 package camp.service;
 
-import camp.dto.ScoreDTO;
 import camp.entity.Score;
 
 import java.util.List;
