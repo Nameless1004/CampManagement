@@ -12,4 +12,6 @@ public interface StudentRepository{
     Optional<List<Student>> findAllByState(String state);
     boolean isEmpty();
     Optional<List<Student>> findAll();
+
+    void delete(Long id);
 }

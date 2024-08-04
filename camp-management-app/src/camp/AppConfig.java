@@ -16,7 +16,7 @@ public class AppConfig {
     }
 
     public ScoreManagementService getScoreManagementService() {
-        return new ScoreManagementServiceImpl(getStudentRepository(), getScoreRepository());
+        return new ScoreManagementServiceImpl(getStudentRepository(), getScoreRepository(), getSubjectRepository());
     }
 
     private SubjectRepository getSubjectRepository() {

@@ -15,4 +15,6 @@ public interface ScoreRepository {
 
     boolean isEmpty();
     void update(Long scoreId, int score);
+
+    void delete(Long studentId);
 }

@@ -55,6 +55,39 @@ public class Score {
         return grade;
     }
 
+    public static String toGrade(String subjectType, int score){
+        String grade = "";
+        if (subjectType.equals("MANDATORY")) {
+            if (95 <= score) {
+                grade = "A";
+            } else if (90 <= score) {
+                grade = "B";
+            } else if (80 <= score) {
+                grade = "C";
+            } else if (70 <= score) {
+                grade = "D";
+            } else if (60 <= score) {
+                grade = "F";
+            } else {
+                grade = "N";
+            }
+        } else {
+            if (90 <= score) {
+                grade = "A";
+            } else if (80 <= score) {
+                grade = "B";
+            } else if (70 <= score) {
+                grade = "C";
+            } else if (60 <= score) {
+                grade = "D";
+            } else if (50 <= score) {
+                grade = "F";
+            } else {
+                grade = "N";
+            }
+        }
+        return grade;
+    }
     public void converToGrade(int score) {
         String grade = "";
         if (subjectType.equals("MANDATORY")) {

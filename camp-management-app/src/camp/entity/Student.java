@@ -8,6 +8,7 @@ public class Student {
     public Student(String name){
         id = null;
         this.name = name;
+        this.state = "Green";
     }
 
     public Student(Long id, String name, String state) {

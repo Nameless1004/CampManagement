@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface StudentManagementService {
     void add(Student student);
     void addSubjects(List<Subject> subjects);
+    void delete(Long studentId);
     boolean update(Long studentId, String name, String state);
     Optional<Subject> findSubject(Long studentId, String subjectName);
     void inquireSubjects(Long studentId);

@@ -54,4 +54,9 @@ public class StudentRepositoryImpl implements StudentRepository{
 
         return Optional.of(students.values().stream().toList());
     }
+
+    @Override
+    public void delete(Long id) {
+        students.remove(id);
+    }
 }

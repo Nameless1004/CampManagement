@@ -45,4 +45,9 @@ public class SubjectRepositoryImpl implements SubjectRepository {
 
         return Optional.empty();
     }
+
+    @Override
+    public void delete(Long id) {
+        subjects.remove(id);
+    }
 }

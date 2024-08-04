@@ -11,4 +11,6 @@ public interface SubjectRepository {
     boolean isEmpty();
 
     Optional<Subject> find(Long studentId, String subjectName);
+
+    void delete(Long id);
 }

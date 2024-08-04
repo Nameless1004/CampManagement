@@ -76,7 +76,8 @@ public class CampManagementApplication {
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 수강생 정보 수정");
             System.out.println("4. 상태별 수강생 목록 조회");
-            System.out.println("5. 메인 화면 이동");
+            System.out.println("5. 수강생 정보 삭제");
+            System.out.println("6. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -85,12 +86,27 @@ public class CampManagementApplication {
                 case 2 -> inquireStudents();
                 case 3 -> updateStudent();
                 case 4 -> inquireStudentsByState();
+                case 5 -> deleteStudent();
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+
+    private void deleteStudent() {
+        System.out.println("수강생 정보 삭제를 시작합니다...");
+        printStudents();
+        System.out.print("삭제할 수강생 아이디를 입력해주세요.");
+        Long id = sc.nextLong();
+        if(studentManagementService.isValidStudentId(id)){
+            studentManagementService.delete(id);
+            scoreManagementService.delete(id);
+        } else{
+            System.out.println("존재하지 않는 수강생 아이디입니다. id: " + id);
+        }
+
     }
 
     private void inquireStudents() {
@@ -191,7 +207,9 @@ public class CampManagementApplication {
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 메인 화면 이동");
+            System.out.println("4. 수강생의 과목별 평균 등급 조회");
+            System.out.println("5. 특정 상태 수강생들의 필수 과목 평균 등급 조회");
+            System.out.println("6. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -199,13 +217,31 @@ public class CampManagementApplication {
                 case 1 -> createScore();
                 case 2 -> updateScore();
                 case 3 -> inquireRoundGradeBySubject();
-                case 4 -> flag = false; // 메인 화면 이동
+                case 4 -> inquireAverageGradeBySubjects();
+                case 5 -> inquireMandatorySubjectAverageGradeByState();
+                case 6 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+
+    private void inquireAverageGradeBySubjects() {
+        System.out.println("수강생의 과목별 평균 등급을 조회합니다...");
+        printStudents();
+        System.out.print("조회할 수강생 id: ");
+        Long id = sc.nextLong();
+        if(!studentManagementService.isValidStudentId(id)) {
+            System.out.println("존재하지 않는 수강생 id입니다. / id: " + id);
+            return;
+        }
+
+
+        System.out.print("조회할 과목: ");
+        String subjectName = sc.next();
+        scoreManagementService.inquireAverageGradeBySubject(id);
     }
 
     private void updateScore() {
@@ -247,6 +283,13 @@ public class CampManagementApplication {
         }
 
         scoreManagementService.update(studentId, subjectName, round, score);
+    }
+
+    private void inquireMandatorySubjectAverageGradeByState(){
+        System.out.println("특정 상태 수강생들의 필수 과목 평균 등급을 조회합니다...");
+        System.out.print("조회할 상태: ");
+        String state = sc.next();
+        scoreManagementService.inquireMandatorySubjectAverageGradeByState(state);
     }
 
     private void inquireRoundGradeBySubject() {

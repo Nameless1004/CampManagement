@@ -2,6 +2,7 @@ package camp.repository;
 
 import camp.entity.Score;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -62,5 +63,19 @@ public class ScoreRepositoryImpl implements ScoreRepository{
     @Override
     public void update(Long scoreId, int score) {
         scores.get(scoreId).setScore(score);
+    }
+
+    @Override
+    public void delete(Long studentId) {
+        List<Long> removeId = new ArrayList<>();
+        for(Score score : scores.values()) {
+            if(score.getStudentId().longValue() == studentId.longValue()) {
+                removeId.add(score.getScoreId());
+            }
+        }
+
+        for(Long id : removeId) {
+            scores.remove(id);
+        }
     }
 }

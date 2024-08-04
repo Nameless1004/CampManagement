@@ -29,6 +29,12 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
+    public void delete(Long studentId) {
+        studentRepository.delete(studentId);
+        subjectRepository.delete(studentId);
+    }
+
+    @Override
     public boolean update(Long studentId, String name, String state) {
         if(isValidStudentId(studentId)){
             Student student = studentRepository.findById(studentId).get();
@@ -79,6 +85,8 @@ public class StudentManagementServiceImpl implements StudentManagementService {
                     for(Subject subject : subjects){
                         System.out.print(subject.getName() + " ");
                     }
+                    System.out.println();
+                    System.out.println();
                     System.out.println("----------------------");
                 } else{
                     System.out.println("수강중인 과목이 없습니다.");
