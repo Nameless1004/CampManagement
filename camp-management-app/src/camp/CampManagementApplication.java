@@ -32,12 +32,10 @@ public class CampManagementApplication {
         choiceSubject.add("Ruby");
         choiceSubject.add("Testing");
 
-        StudentRepository studentRepository = new StudentRepositoryImpl();
-        ScoreRepository scoreRepository = new ScoreRepositoryImpl();
-        SubjectRepository subjectRepository = new SubjectRepositoryImpl();
+        AppConfig config = new AppConfig();
+        studentManagementService = config.getStudentManagementService();
+        scoreManagementService = config.getScoreManagementService();
 
-        studentManagementService = new StudentManagementServiceImpl(studentRepository, subjectRepository);
-        scoreManagementService = new ScoreManagementServiceImpl(studentRepository, scoreRepository);
         try {
             displayMainView();
         } catch (Exception e) {
@@ -76,19 +74,51 @@ public class CampManagementApplication {
             System.out.println("수강생 관리 실행 중...");
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
-            System.out.println("3. 메인 화면 이동");
+            System.out.println("3. 수강생 정보 수정");
+            System.out.println("4. 상태별 수강생 목록 조회");
+            System.out.println("5. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
                 case 1 -> createStudent();
-                case 2 -> studentManagementService.inquireStudents();
+                case 2 -> inquireStudents();
+                case 3 -> updateStudent();
+                case 4 -> inquireStudentsByState();
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+
+    private void inquireStudents() {
+        studentManagementService.inquireStudents();
+    }
+
+    private void inquireStudentsByState() {
+        System.out.print("조회할 상태: ");
+        String state = sc.next();
+        studentManagementService.inquireStudentsByState(state);
+    }
+
+    private void updateStudent() {
+        printStudents();
+        System.out.print("수정할 수강생의 id를 입력해주세요: ");
+        Long id = sc.nextLong();
+        if(!studentManagementService.isValidStudentId(id)){
+            System.out.println("등록되지 않은 아이디입니다.");
+            return;
+        }
+        System.out.print("이름: ");
+        String name = sc.next();
+        // 상태 예외처리 아직 안함
+        // 옳게 썼다는 가정하에 진행
+        System.out.print("상태: ");
+        String state = sc.next();
+
+        studentManagementService.update(id, name, state);
     }
 
     private void createStudent() {

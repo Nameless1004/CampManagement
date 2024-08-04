@@ -29,6 +29,20 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     }
 
     @Override
+    public boolean update(Long studentId, String name, String state) {
+        if(isValidStudentId(studentId)){
+            Student student = studentRepository.findById(studentId).get();
+            student.setName(name);
+            student.setState(state);
+            studentRepository.update(student);
+            return true;
+        } else{
+            System.out.println("존재하지 않는 수강생 아이디입니다.");
+            return false;
+        }
+    }
+
+    @Override
     public Optional<Subject> findSubject(Long studentId, String subjectName) {
         return subjectRepository.find(studentId, subjectName);
     }
@@ -56,11 +70,25 @@ public class StudentManagementServiceImpl implements StudentManagementService {
         if(findall.isPresent()){
             List<Student> students = findall.get();
             for(Student student : students){
-                System.out.println("ID: " + student.getId() + " / " + "Name: " + student.getName());
+                System.out.print("ID: " + student.getId() + " / " + "Name: " + student.getName() + " ");
+                System.out.println("State: " + student.getState() + " ");
+                System.out.println("수강 중인 과목");
+                Optional<List<Subject>> find = subjectRepository.findAllById(student.getId());
+                if(find.isPresent()){
+                    List<Subject> subjects = find.get();
+                    for(Subject subject : subjects){
+                        System.out.print(subject.getName() + " ");
+                    }
+                    System.out.println("----------------------");
+                } else{
+                    System.out.println("수강중인 과목이 없습니다.");
+                    System.out.println("----------------------");
+                }
             }
         }
         else{
             System.out.println("등록된 학생들이 없습니다.");
+            System.out.println("----------------------");
         }
     }
 
@@ -80,5 +108,21 @@ public class StudentManagementServiceImpl implements StudentManagementService {
     @Override
     public boolean isValidStudentId(Long studentId) {
         return studentRepository.findById(studentId).isPresent();
+    }
+
+    @Override
+    public void inquireStudentsByState(String state) {
+        System.out.println(state+"인 학생 목록 조회");
+        System.out.println("---------------------------");
+        Optional<List<Student>> allByState = studentRepository.findAllByState(state);
+        if(allByState.isPresent()){
+            List<Student> students = allByState.get();
+            for(Student student : students){
+                System.out.println("studentId: " + student.getId() + " " + "Name: " + student.getName() + " ");
+            }
+        } else{
+            System.out.println(state + " 상태인 학생이 없습니다.");
+        }
+        System.out.println("---------------------------");
     }
 }
