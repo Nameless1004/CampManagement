@@ -29,6 +29,8 @@ public class Student {
         return state;
     }
 
+    public void setName(String name) { this.studentName = name; }
+
     public void setState(StudentState state) {
         this.state = state;
     }

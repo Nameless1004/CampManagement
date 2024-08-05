@@ -150,9 +150,10 @@ public class CampManagementApplication {
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 수강생 정보 조회");
             System.out.println("4. 수강생 상태 지정");
-            System.out.println("5. 상태별 수강생 목록 조회");
-            System.out.println("6. 수강생 삭제");
-            System.out.println("7. 메인 화면 이동");
+            System.out.println("5. 수강생 정보 수정");
+            System.out.println("6. 상태별 수강생 목록 조회");
+            System.out.println("7. 수강생 삭제");
+            System.out.println("8. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -161,15 +162,52 @@ public class CampManagementApplication {
                 case 2 -> inquireStudent(); // 수강생 목록 조회
                 case 3 -> inquireStudentInfo(); // 수강생 정보 조회
                 case 4 -> setStudentState(); //수강생 상태 지정
-                case 5 -> inquireStudentListByState(); // 상태별 수강생 목록 조회
-                case 6 -> deleteStudent(); // 수강생 삭제
-                case 7 -> flag = false; // 메인 화면 이동
+                case 5 -> updateStudentInfo(); //수강생 정보 수정
+                case 6 -> inquireStudentListByState(); // 상태별 수강생 목록 조회
+                case 7 -> deleteStudent(); // 수강생 삭제
+                case 8 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+
+    private static void updateStudentInfo() {
+        System.out.println("수강생의 정보를 수정합니다...");
+        printStudentList();
+        String studentId = getStudentId();
+        Student student = null;
+
+        for (Student s : studentStore) {
+            if (s.getStudentId().equals(studentId)) {
+                student = s;
+                break;
+            }
+        }
+
+        if(student == null){
+            return;
+        }
+
+        System.out.print("이름: ");
+        String newName = sc.next();
+
+        System.out.print("상태: ");
+
+        try {
+            StudentState newState = StudentState.valueOf(sc.next());
+
+            student.setName(newName);
+            student.setState(newState);
+
+            System.out.println("수강생의 정보가 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("state입력이 잘못되었습니다.");
+            return;
+        }
+
     }
 
     private static void setStudentState() {
@@ -279,7 +317,8 @@ public class CampManagementApplication {
         int choiceNum = sc.nextInt();
         for (int i = 0; i < choiceNum; i++) {
             System.out.print("선택 과목 입력: ");
-            String choiceName = sc.next();
+            sc.next();
+            String choiceName = sc.nextLine();
             for (Subject s : subjectStore) {
                 if (s.getSubjectName().equals(choiceName)) {
                     student.addSubject(s); //선택 과목 등록
