@@ -150,9 +150,10 @@ public class CampManagementApplication {
             System.out.println("2. 수강생 목록 조회");
             System.out.println("3. 수강생 정보 조회");
             System.out.println("4. 수강생 상태 지정");
-            System.out.println("5. 상태별 수강생 목록 조회");
-            System.out.println("6. 수강생 삭제");
-            System.out.println("7. 메인 화면 이동");
+            System.out.println("5. 수강생 정보 수정");
+            System.out.println("6. 상태별 수강생 목록 조회");
+            System.out.println("7. 수강생 삭제");
+            System.out.println("8. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -161,15 +162,52 @@ public class CampManagementApplication {
                 case 2 -> inquireStudent(); // 수강생 목록 조회
                 case 3 -> inquireStudentInfo(); // 수강생 정보 조회
                 case 4 -> setStudentState(); //수강생 상태 지정
-                case 5 -> inquireStudentListByState(); // 상태별 수강생 목록 조회
-                case 6 -> deleteStudent(); // 수강생 삭제
-                case 7 -> flag = false; // 메인 화면 이동
+                case 5 -> updateStudentInfo(); //수강생 정보 수정
+                case 6 -> inquireStudentListByState(); // 상태별 수강생 목록 조회
+                case 7 -> deleteStudent(); // 수강생 삭제
+                case 8 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+
+    private static void updateStudentInfo() {
+        System.out.println("수강생의 정보를 수정합니다...");
+        printStudentList();
+        String studentId = getStudentId();
+        Student student = null;
+
+        for (Student s : studentStore) {
+            if (s.getStudentId().equals(studentId)) {
+                student = s;
+                break;
+            }
+        }
+
+        if(student == null){
+            return;
+        }
+
+        System.out.print("이름: ");
+        String newName = sc.next();
+
+        System.out.print("상태: ");
+
+        try {
+            StudentState newState = StudentState.valueOf(sc.next());
+
+            student.setName(newName);
+            student.setState(newState);
+
+            System.out.println("수강생의 정보가 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("state입력이 잘못되었습니다.");
+            return;
+        }
+
     }
 
     private static void setStudentState() {
@@ -196,7 +234,57 @@ public class CampManagementApplication {
 
     // 수강생 삭제
     private static void deleteStudent() {
+        System.out.println("수강생을 삭제합니다..!");
 
+        // 저희가 학생 데이터가 얽혀있는곳에서 삭제를 해줘야 한다.
+        // 학생데이터가 들어가있는 곳이 어디어디어디일까요
+        // scoreStore, studentStore, subjectScore
+
+        printStudentList();
+        // 학생 아이디를 입력받는다.
+        String studentId = getStudentId();
+
+        //studentId 있는지 처리
+        Optional<Student> find = studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst();
+        if(find.isEmpty()) {
+            System.out.println("해당 id인 학생이 존재하지 않습니다.");
+            return;
+        }
+
+        // studentStore -> 학생 저장소
+        // 여기서 studentId가 같은 student를 삭제하면 되겠쬬 << 조건
+        // for
+        for (int i = studentStore.size() - 1; i >= 0; i--) {
+            // i번째 요소를 store에서 가져와서 변수에 담아주세요. hint : get
+            Student currentStudent = studentStore.get(i);
+            // 만약에 현재 학생의 아이디가 입력받은 아이디 라면
+            if(currentStudent.getStudentId().equals(studentId)) {
+                // 저희가 삭제해야할 student를 찾은거죠
+                studentStore.remove(i);
+            }
+        }
+
+        // scoreStore도 동일하게 진행을 해주시면 됩니다.
+        // 외우시면 안되고 이해를 하고 가셔야됩니다.
+        // [0] [1] [2] [3] [4] : index
+        // size = 5 => 4번이마지막입니다. 왜냐 -> index 0부터 시작이기 때문에
+        // size - 1을 해줘야 마지막 인덱스입니다.
+        // String -> length();
+        // Array -> length;
+        // Collection -> size();
+        for (int i = scoreStore.size() - 1; i >= 0; i--) {
+            // scoreStore -> Score 타입을 반환해야하는데
+            // 지금 받으시는 변수는 Student타입이어서 오류가 난다.
+            Score currentScore = scoreStore.get(i);
+            if(currentScore.getStudentId().equals(studentId)) {
+                scoreStore.remove(i);
+            }
+        }
+
+        // 위에 쓴 거랑 동일한 기능 ( 람다, Predicate )
+        // studentStore.removeIf( x -> x.getStudentId().equals(studentId));
+        // scoreStore.removeIf( x -> x.getStudentId().equals(studentId));
+        System.out.println("삭제 성공!...");
     }
 
     // 상태별 수강생 목록 조회
@@ -279,7 +367,8 @@ public class CampManagementApplication {
         int choiceNum = sc.nextInt();
         for (int i = 0; i < choiceNum; i++) {
             System.out.print("선택 과목 입력: ");
-            String choiceName = sc.next();
+            sc.next();
+            String choiceName = sc.nextLine();
             for (Subject s : subjectStore) {
                 if (s.getSubjectName().equals(choiceName)) {
                     student.addSubject(s); //선택 과목 등록
