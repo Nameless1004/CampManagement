@@ -167,16 +167,45 @@ public class CampManagementApplication {
     }
 
     // 수강생 등록
+
+
     private static void createStudent() {
+        //수강생 이름 및 고유번호 등록
         System.out.println("\n수강생을 등록합니다...");
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
         // 기능 구현 (필수 과목, 선택 과목)
-
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
+        System.out.print("필수 과목 개수 입력: ");
+        int mendatoryNum = sc.nextInt();
+        for (int i = 0; i < mendatoryNum; i++) {
+            System.out.print("필수 과목 입력: ");
+            String mendatoryName = sc.next();
+            for (Subject s : subjectStore) {
+                if (s.getSubjectName().equals(mendatoryName)) {
+                    student.addSubject(s); //필수 과목 등록
+                }
+            }
+        }
+
+        System.out.print("선택 과목 개수 입력: ");
+        int choiceNum = sc.nextInt();
+        for (int i = 0; i < choiceNum; i++) {
+            System.out.print("선택 과목 입력: ");
+            String choiceName = sc.next();
+            for (Subject s : subjectStore) {
+                if (s.getSubjectName().equals(choiceName)) {
+                    student.addSubject(s); //선택 과목 등록
+                }
+            }
+        }
+
+
         // 기능 구현
+        studentStore.add(student);
         System.out.println("수강생 등록 성공!\n");
     }
+
 
     // 수강생 목록 조회
     private static void inquireStudent() {
@@ -370,7 +399,7 @@ public class CampManagementApplication {
         for (int i = 0; i < scoreStore.size(); ++i) {
             // 현재스코어
             Score currentScore = scoreStore.get(i);
-            if ( currentScore.getStudentId().equals(studentId) && currentScore.getSubjectId().equals(selectSubjectId)) {
+            if (currentScore.getStudentId().equals(studentId) && currentScore.getSubjectId().equals(selectSubjectId)) {
                 scoreList.add(currentScore);
             }
         }
@@ -384,6 +413,7 @@ public class CampManagementApplication {
         }
         System.out.println("회차별 등급을 조회합니다...");
     }
+
     // 학생아이디로 수강중인 과목 목록 가져오기
     private static List<Subject> getSubjectListByStudent(String studentId) {
         for (Student student : studentStore) {
