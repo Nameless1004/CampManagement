@@ -16,10 +16,10 @@ public class Score {
         this.subjectName = subjectName;
         this.round = round;
         this.score = score;
-        this.grade = convertToGrade(score);
+        this.grade = convertToGrade(subjectType, score);
     }
 
-    private String convertToGrade(int score){
+    public static String convertToGrade(String subjectType, int score){
         String grade = "";
         switch (subjectType){
             case "MANDATORY":
@@ -84,7 +84,7 @@ public class Score {
 
     public void setScore(int score) {
         this.score = score;
-        this.grade = convertToGrade(score);
+        this.grade = convertToGrade(subjectType, score);
     }
 
     @Override
