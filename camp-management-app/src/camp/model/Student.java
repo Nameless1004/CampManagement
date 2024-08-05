@@ -7,11 +7,13 @@ public class Student {
     private String studentId;
     private String studentName;
     private List<Subject> subjectList;
+    private StudentState state;
 
     public Student(String seq, String studentName) {
         this.studentId = seq;
         this.studentName = studentName;
         this.subjectList = new ArrayList<Subject>();
+        this.state = StudentState.Green;
     }
 
     // Getter
@@ -23,6 +25,13 @@ public class Student {
         return studentName;
     }
 
+    public StudentState getState() {
+        return state;
+    }
+
+    public void setState(StudentState state) {
+        this.state = state;
+    }
 
     // 원본은 수정 못하게 복사본을 줍니다.
     public List<Subject> getSubjectList() {
