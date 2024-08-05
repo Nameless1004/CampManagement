@@ -42,6 +42,7 @@ public class CampManagementApplication {
             displayMainView();
         } catch (Exception e) {
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
+            System.out.println(e);
         }
     }
 
@@ -339,12 +340,35 @@ public class CampManagementApplication {
     }
 
     private static void inquireAvgDegreeBySubject() {
-        printStudentList();     // 수강생 목록 출력
-        String studentId = getStudentId();  // 수강생 id 받기
-        List<Score> studentScore = getScoreListByStudent(studentId);
-        
-        for (Score score : studentScore) {
-            System.out.println(score.getSubjectName() + " : " + score.getScore());
+        printStudentList();
+        String studentId = getStudentId();
+        List<Score> studentScoreList = getScoreListByStudent(studentId);
+
+        if(studentScoreList.isEmpty()) {
+            System.out.println("입력된 수강생의 점수가 없습니다.");
+            return;
+        }
+
+        Map<String, Integer[]> subjectScore = new HashMap<>();
+        // 학생의 수강 과목과 수강 과목의 총 점수 및 과목 수를 저장하는 맵
+        for (Score score : studentScoreList) {
+            int sumScore = score.getScore();
+            int count = 1;
+            if(subjectScore.containsKey(score.getSubjectName())) {
+                sumScore += subjectScore.get(score.getSubjectName())[0];
+                count = subjectScore.get(score.getSubjectName())[1] + 1;
+            }
+            subjectScore.put(score.getSubjectName(), new Integer[]{sumScore, count});
+        }
+
+        // 결과 출력
+        System.out.println("학생 " + studentId + "의 과목별 평균 등급");
+        for (Map.Entry<String, Integer[]> entry : subjectScore.entrySet()) {
+            int avgScore = entry.getValue()[0] / entry.getValue()[1];
+            String subjectType = "MANDATORY";
+            for (Score score : studentScoreList) if(score.getSubjectName().equals(entry.getKey())) { subjectType = score.getSubjectType(); break; }
+            String avgGrade = Score.convertToGrade(subjectType, avgScore);
+            System.out.println("과목명 : " + entry.getKey() + ", 평균 등급 : " + avgGrade);
         }
     }
 
@@ -359,6 +383,7 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
+        printStudentList();
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
         List<Subject> subjectList = getSubjectListByStudent(studentId);

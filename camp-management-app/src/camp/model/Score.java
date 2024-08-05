@@ -82,6 +82,10 @@ public class Score {
         return subjectName;
     }
 
+    public String getSubjectType() {
+        return subjectType;
+    }
+
     public void setScore(int score) {
         this.score = score;
         this.grade = convertToGrade(subjectType, score);
