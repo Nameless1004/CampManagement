@@ -5,11 +5,7 @@ import camp.model.Student;
 import camp.model.StudentState;
 import camp.model.Subject;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Notification
@@ -162,10 +158,10 @@ public class CampManagementApplication {
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> inquireStudentInfo();
-                case 4 -> setStudentState();
-                case 5 -> inquireStudentListByState();
-                case 6 -> deleteStudent();
+                case 3 -> inquireStudentInfo(); // 수강생 정보 조회
+                case 4 -> setStudentState(); //수강생 상태 지정
+                case 5 -> inquireStudentListByState(); // 상태별 수강생 목록 조회
+                case 6 -> deleteStudent(); // 수강생 삭제
                 case 7 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
@@ -305,8 +301,8 @@ public class CampManagementApplication {
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> t1();
-                case 5 -> t2();
+                case 4 -> inquireAvgDegreeBySubject(); // 수강생의 과목별 평균 등급 조회
+                case 5 -> inquireAvgManDegreeByState(); // 특정 상태 수강생들의 필수 과목 평균 등급 조회
                 case 6 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
@@ -316,10 +312,18 @@ public class CampManagementApplication {
         }
     }
 
-    private static void t2() {
+    private static void inquireAvgDegreeBySubject() {
+        printStudentList();     // 수강생 목록 출력
+        String studentId = getStudentId();  // 수강생 id 받기
+        List<Score> studentScore = getScoreListByStudent(studentId);
+        
+        for (Score score : studentScore) {
+            System.out.println(score.getSubjectName() + " : " + score.getScore());
+        }
     }
 
-    private static void t1() {
+    private static void inquireAvgManDegreeByState() {
+
     }
 
     private static String getStudentId() {
@@ -364,7 +368,7 @@ public class CampManagementApplication {
             }
         }
 
-        Score scoreData = new Score(studentId, selectedSubject.getSubjectId(), selectedSubject.getSubjectType(), round, score);
+        Score scoreData = new Score(studentId, selectedSubject.getSubjectId(), selectedSubject.getSubjectType(), selectedSubject.getSubjectName(), round, score);
         scoreStore.add(scoreData);
 
         System.out.println("\n점수 등록 성공!");
