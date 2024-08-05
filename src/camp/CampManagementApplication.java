@@ -234,7 +234,57 @@ public class CampManagementApplication {
 
     // 수강생 삭제
     private static void deleteStudent() {
+        System.out.println("수강생을 삭제합니다..!");
 
+        // 저희가 학생 데이터가 얽혀있는곳에서 삭제를 해줘야 한다.
+        // 학생데이터가 들어가있는 곳이 어디어디어디일까요
+        // scoreStore, studentStore, subjectScore
+
+        printStudentList();
+        // 학생 아이디를 입력받는다.
+        String studentId = getStudentId();
+
+        //studentId 있는지 처리
+        Optional<Student> find = studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst();
+        if(find.isEmpty()) {
+            System.out.println("해당 id인 학생이 존재하지 않습니다.");
+            return;
+        }
+
+        // studentStore -> 학생 저장소
+        // 여기서 studentId가 같은 student를 삭제하면 되겠쬬 << 조건
+        // for
+        for (int i = studentStore.size() - 1; i >= 0; i--) {
+            // i번째 요소를 store에서 가져와서 변수에 담아주세요. hint : get
+            Student currentStudent = studentStore.get(i);
+            // 만약에 현재 학생의 아이디가 입력받은 아이디 라면
+            if(currentStudent.getStudentId().equals(studentId)) {
+                // 저희가 삭제해야할 student를 찾은거죠
+                studentStore.remove(i);
+            }
+        }
+
+        // scoreStore도 동일하게 진행을 해주시면 됩니다.
+        // 외우시면 안되고 이해를 하고 가셔야됩니다.
+        // [0] [1] [2] [3] [4] : index
+        // size = 5 => 4번이마지막입니다. 왜냐 -> index 0부터 시작이기 때문에
+        // size - 1을 해줘야 마지막 인덱스입니다.
+        // String -> length();
+        // Array -> length;
+        // Collection -> size();
+        for (int i = scoreStore.size() - 1; i >= 0; i--) {
+            // scoreStore -> Score 타입을 반환해야하는데
+            // 지금 받으시는 변수는 Student타입이어서 오류가 난다.
+            Score currentScore = scoreStore.get(i);
+            if(currentScore.getStudentId().equals(studentId)) {
+                scoreStore.remove(i);
+            }
+        }
+
+        // 위에 쓴 거랑 동일한 기능 ( 람다, Predicate )
+        // studentStore.removeIf( x -> x.getStudentId().equals(studentId));
+        // scoreStore.removeIf( x -> x.getStudentId().equals(studentId));
+        System.out.println("삭제 성공!...");
     }
 
     // 상태별 수강생 목록 조회
