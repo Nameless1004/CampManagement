@@ -229,7 +229,33 @@ public class CampManagementApplication {
 
     // 수강생 정보 조회
     private static void inquireStudentInfo() {
+        System.out.println("\n수강생 정보를 조회합니다...");
+        printStudentList();
+        String inputID = getStudentId();
+        Student student = null;
 
+        for(int index = 0; index < studentStore.size(); index++) {
+            Student s = studentStore.get(index);
+            if(s.getStudentId().equals(inputID)) {
+                student = s;
+                break;
+            }
+        }
+
+        if(student == null) {
+            System.out.println("학생을 찾을 수 없습니다.");
+            inquireStudentInfo();
+            return;
+        }
+
+        System.out.println("학생 고유 번호: " + student.getStudentId());
+        System.out.println("학생 이름 : " + student.getStudentName());
+        System.out.println("학생 상태 : " + student.getState());
+
+        // 선택한 과목리스트 출력 기능은 이미 존재하므로 찾아서 사용
+        printSubjectLists(student.getStudentId());
+
+        System.out.println("\n수강생 정보 조회 성공!");
     }
 
     // 수강생 등록
@@ -390,6 +416,12 @@ public class CampManagementApplication {
         System.out.println("---------------------------------");
         System.out.println("【 " + "\u001B[34m" + studentId + "\u001B[0m" + " 】 " + "수강 과목 리스트");
         System.out.println("---------------------------------");
+
+        if(subjectList.isEmpty()){
+            System.out.println("수강중인 과목이 없습니다.");
+            return;
+        }
+
         for (int i = 0; i < subjectList.size(); i++) {
             Subject subject = subjectList.get(i);
             System.out.printf("   %-4s   |", subject.getSubjectId());
