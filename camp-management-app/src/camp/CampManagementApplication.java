@@ -339,6 +339,7 @@ public class CampManagementApplication {
         }
     }
 
+    // 수강생의 과목별 평균 등급 조회
     private static void inquireAvgDegreeBySubject() {
         printStudentList();
         String studentId = getStudentId();
@@ -372,8 +373,35 @@ public class CampManagementApplication {
         }
     }
 
+    // 특정 상태 수강생들의 필수 과목 평균 등급 조회
     private static void inquireAvgManDegreeByState() {
+        System.out.print("조회하고 싶은 수강생들의 상태를 입력하세요 (Green, Yellow, Red) : ");
+        String state = sc.next();
+        List<Student> studentsByState = new ArrayList<>();
+        // 특정 상태의 수강생들 리스트에 저장
+        for (Student student : studentStore) {
+            if(student.getState() == StudentState.valueOf(state)) studentsByState.add(student);
+        }
+        // 특정 상태의 수강생들 존재 X
+        if(studentsByState.isEmpty()) {
+            System.out.println(state + "상태의 학생이 없습니다.");
+            return;
+        }
 
+        System.out.println("--- " + state + "상태 학생들의 필수 과목 평균 등급 ---");
+        for (Student student : studentsByState) {
+            List<Score> scoreListByStudent = getScoreListByStudent(student.getStudentId());
+            int sumScore = 0;
+            int count = 0;
+            for (Score score : scoreListByStudent) {
+                if(!score.getSubjectType().equals("MANDATORY")) continue;
+                sumScore += score.getScore();
+                count++;
+            }
+            if(count == 0) continue;
+            String avgGrade = Score.convertToGrade("MANDATORY", sumScore/count);
+            System.out.println(student.getStudentName() + "학생 : " + avgGrade);
+        }
     }
 
     private static String getStudentId() {
