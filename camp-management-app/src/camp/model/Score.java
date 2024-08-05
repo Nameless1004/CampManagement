@@ -3,15 +3,17 @@ package camp.model;
 public class Score {
     private String subjectId;
     private String subjectType;
+    private String subjectName;
     private String studentId;
     private int round;
     private int score;
     private String grade;
 
-    public Score(String studentId, String subjectId, String subjectType, int round, int score) {
+    public Score(String studentId, String subjectId, String subjectType, String subjectName, int round, int score) {
         this.studentId = studentId;
         this.subjectId = subjectId;
         this.subjectType = subjectType;
+        this.subjectName = subjectName;
         this.round = round;
         this.score = score;
         this.grade = convertToGrade(subjectType, score);
@@ -76,6 +78,14 @@ public class Score {
         return grade;
     }
 
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public String getSubjectType() {
+        return subjectType;
+    }
+
     public void setScore(int score) {
         this.score = score;
         this.grade = convertToGrade(subjectType, score);
@@ -86,6 +96,7 @@ public class Score {
         return "Score{" +
                 "subjectId='" + subjectId + '\'' +
                 ", subjectType='" + subjectType + '\'' +
+                ", subjectName='" + subjectName + '\'' +
                 ", studentId='" + studentId + '\'' +
                 ", round=" + round +
                 ", score=" + score +

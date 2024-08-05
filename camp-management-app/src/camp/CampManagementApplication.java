@@ -5,11 +5,7 @@ import camp.model.Student;
 import camp.model.StudentState;
 import camp.model.Subject;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Notification
@@ -46,6 +42,7 @@ public class CampManagementApplication {
             displayMainView();
         } catch (Exception e) {
             System.out.println("\n오류 발생!\n프로그램을 종료합니다.");
+            System.out.println(e);
         }
     }
 
@@ -162,10 +159,10 @@ public class CampManagementApplication {
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> inquireStudentInfo();
-                case 4 -> setStudentState();
-                case 5 -> inquireStudentListByState();
-                case 6 -> deleteStudent();
+                case 3 -> inquireStudentInfo(); // 수강생 정보 조회
+                case 4 -> setStudentState(); //수강생 상태 지정
+                case 5 -> inquireStudentListByState(); // 상태별 수강생 목록 조회
+                case 6 -> deleteStudent(); // 수강생 삭제
                 case 7 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
@@ -331,8 +328,8 @@ public class CampManagementApplication {
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> t1();
-                case 5 -> t2();
+                case 4 -> inquireAvgDegreeBySubject(); // 수강생의 과목별 평균 등급 조회
+                case 5 -> inquireAvgManDegreeByState(); // 특정 상태 수강생들의 필수 과목 평균 등급 조회
                 case 6 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
@@ -342,10 +339,69 @@ public class CampManagementApplication {
         }
     }
 
-    private static void t2() {
+    // 수강생의 과목별 평균 등급 조회
+    private static void inquireAvgDegreeBySubject() {
+        printStudentList();
+        String studentId = getStudentId();
+        List<Score> studentScoreList = getScoreListByStudent(studentId);
+
+        if(studentScoreList.isEmpty()) {
+            System.out.println("입력된 수강생의 점수가 없습니다.");
+            return;
+        }
+
+        Map<String, Integer[]> subjectScore = new HashMap<>();
+        // 학생의 수강 과목과 수강 과목의 총 점수 및 과목 수를 저장하는 맵
+        for (Score score : studentScoreList) {
+            int sumScore = score.getScore();
+            int count = 1;
+            if(subjectScore.containsKey(score.getSubjectName())) {
+                sumScore += subjectScore.get(score.getSubjectName())[0];
+                count = subjectScore.get(score.getSubjectName())[1] + 1;
+            }
+            subjectScore.put(score.getSubjectName(), new Integer[]{sumScore, count});
+        }
+
+        // 결과 출력
+        System.out.println("학생 " + studentId + "의 과목별 평균 등급");
+        for (Map.Entry<String, Integer[]> entry : subjectScore.entrySet()) {
+            int avgScore = entry.getValue()[0] / entry.getValue()[1];
+            String subjectType = "MANDATORY";
+            for (Score score : studentScoreList) if(score.getSubjectName().equals(entry.getKey())) { subjectType = score.getSubjectType(); break; }
+            String avgGrade = Score.convertToGrade(subjectType, avgScore);
+            System.out.println("과목명 : " + entry.getKey() + ", 평균 등급 : " + avgGrade);
+        }
     }
 
-    private static void t1() {
+    // 특정 상태 수강생들의 필수 과목 평균 등급 조회
+    private static void inquireAvgManDegreeByState() {
+        System.out.print("조회하고 싶은 수강생들의 상태를 입력하세요 (Green, Yellow, Red) : ");
+        String state = sc.next();
+        List<Student> studentsByState = new ArrayList<>();
+        // 특정 상태의 수강생들 리스트에 저장
+        for (Student student : studentStore) {
+            if(student.getState() == StudentState.valueOf(state)) studentsByState.add(student);
+        }
+        // 특정 상태의 수강생들 존재 X
+        if(studentsByState.isEmpty()) {
+            System.out.println(state + "상태의 학생이 없습니다.");
+            return;
+        }
+
+        System.out.println("--- " + state + "상태 학생들의 필수 과목 평균 등급 ---");
+        for (Student student : studentsByState) {
+            List<Score> scoreListByStudent = getScoreListByStudent(student.getStudentId());
+            int sumScore = 0;
+            int count = 0;
+            for (Score score : scoreListByStudent) {
+                if(!score.getSubjectType().equals("MANDATORY")) continue;
+                sumScore += score.getScore();
+                count++;
+            }
+            if(count == 0) continue;
+            String avgGrade = Score.convertToGrade("MANDATORY", sumScore/count);
+            System.out.println(student.getStudentName() + "학생 : " + avgGrade);
+        }
     }
 
     private static String getStudentId() {
@@ -355,6 +411,7 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
+        printStudentList();
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
         List<Subject> subjectList = getSubjectListByStudent(studentId);
@@ -390,7 +447,7 @@ public class CampManagementApplication {
             }
         }
 
-        Score scoreData = new Score(studentId, selectedSubject.getSubjectId(), selectedSubject.getSubjectType(), round, score);
+        Score scoreData = new Score(studentId, selectedSubject.getSubjectId(), selectedSubject.getSubjectType(), selectedSubject.getSubjectName(), round, score);
         scoreStore.add(scoreData);
 
         System.out.println("\n점수 등록 성공!");
