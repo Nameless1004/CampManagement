@@ -2,6 +2,7 @@ package camp;
 
 import camp.model.Score;
 import camp.model.Student;
+import camp.model.StudentState;
 import camp.model.Subject;
 
 import java.util.ArrayList;
@@ -150,14 +151,22 @@ public class CampManagementApplication {
             System.out.println("수강생 관리 실행 중...");
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
-            System.out.println("3. 메인 화면 이동");
+            System.out.println("3. 수강생 정보 조회");
+            System.out.println("4. 수강생 상태 지정");
+            System.out.println("5. 상태별 수강생 목록 조회");
+            System.out.println("6. 수강생 삭제");
+            System.out.println("7. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
             switch (input) {
                 case 1 -> createStudent(); // 수강생 등록
                 case 2 -> inquireStudent(); // 수강생 목록 조회
-                case 3 -> flag = false; // 메인 화면 이동
+                case 3 -> inquireStudentInfo();
+                case 4 -> setStudentState();
+                case 5 -> inquireStudentListByState();
+                case 6 -> deleteStudent();
+                case 7 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
@@ -166,9 +175,64 @@ public class CampManagementApplication {
         }
     }
 
+    private static void setStudentState() {
+        System.out.println("수강생의 상태를 지정합니다...");
+        printStudentList();
+        String studentId = getStudentId();
+        System.out.print("상태: Green, Yellow, Red 중에 입력하시오: ");
+        String state = sc.next();
+
+
+        try {
+            StudentState studentState = StudentState.valueOf(state);
+            Optional<Student> find = studentStore.stream().filter(x -> x.getStudentId().equals(studentId)).findFirst();
+            if(find.isPresent()) {
+                Student student = find.get();
+                student.setState(studentState);
+            } else{
+                System.out.println("존재하지 않는 수강생 id입니다.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("잘못된 상태 입력입니다.");
+        }
+    }
+
+    // 수강생 삭제
+    private static void deleteStudent() {
+
+    }
+
+    // 상태별 수강생 목록 조회
+    private static void inquireStudentListByState() {
+        System.out.println("상태별 수강생 목록을 조회합니다...");
+
+        System.out.print("조회할 상태(Green, Yellow, Red): ");
+        String state = sc.next();
+        try{
+            System.out.println("---------------------------------");
+            System.out.println("【 " + "\u001B[34m" + state + " 수강생 리스트 ( ID | NAME )" + "\u001B[0m" + " 】 ");
+            System.out.println("---------------------------------");
+            StudentState studentState = StudentState.valueOf(state);
+            List<Student> students = studentStore.stream().filter(x-> x.getState() == studentState).toList();
+            if(students.isEmpty()){
+                System.out.println(studentState.name() +"인 학생이 없습니다.");
+            } else {
+                for(Student student : students){
+                    System.out.printf("   %-4s   |", student.getStudentId());
+                    System.out.printf("  %-6s  %n", student.getStudentName());
+                }
+            }
+        } catch (IllegalArgumentException e){
+            System.out.println("잘못된 상태 입력입니다.");
+        }
+    }
+
+    // 수강생 정보 조회
+    private static void inquireStudentInfo() {
+
+    }
+
     // 수강생 등록
-
-
     private static void createStudent() {
         //수강생 이름 및 고유번호 등록
         System.out.println("\n수강생을 등록합니다...");
@@ -231,7 +295,9 @@ public class CampManagementApplication {
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
             System.out.println("3. 수강생의 특정 과목 회차별 등급 조회");
-            System.out.println("4. 메인 화면 이동");
+            System.out.println("4. 수강생의 과목별 평균 등급 조회");
+            System.out.println("5. 특정 상태 수강생들의 필수 과목 평균 등급 조회");
+            System.out.println("6. 메인 화면 이동");
             System.out.print("관리 항목을 선택하세요...");
             int input = sc.nextInt();
 
@@ -239,13 +305,21 @@ public class CampManagementApplication {
                 case 1 -> createScore(); // 수강생의 과목별 시험 회차 및 점수 등록
                 case 2 -> updateRoundScoreBySubject(); // 수강생의 과목별 회차 점수 수정
                 case 3 -> inquireRoundGradeBySubject(); // 수강생의 특정 과목 회차별 등급 조회
-                case 4 -> flag = false; // 메인 화면 이동
+                case 4 -> t1();
+                case 5 -> t2();
+                case 6 -> flag = false; // 메인 화면 이동
                 default -> {
                     System.out.println("잘못된 입력입니다.\n메인 화면 이동...");
                     flag = false;
                 }
             }
         }
+    }
+
+    private static void t2() {
+    }
+
+    private static void t1() {
     }
 
     private static String getStudentId() {
