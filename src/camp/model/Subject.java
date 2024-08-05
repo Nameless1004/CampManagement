@@ -24,4 +24,17 @@ public class Subject {
         return subjectType;
     }
 
+    public String getSubjectTypeKorean(){
+        String korean = switch (subjectType){
+            case "MANDATORY" -> "필수";
+            case "CHOICE" -> "선택";
+            default -> throw new IllegalStateException("Unexpected value: " + subjectType);
+        };
+        return korean;
+    }
+
+    @Override
+    public String toString() {
+        return "[id: " + getSubjectId() + " ]"+ "[ " + getSubjectTypeKorean() + " ]" + " " + subjectName;
+    }
 }
