@@ -354,6 +354,7 @@ public class CampManagementApplication {
         //필수 과목 개수 입력
         System.out.print("필수 과목 개수 입력 (3~5개): ");
         int mendatoryNum = sc.nextInt();
+        sc.nextLine();
         //필수 과목 개수 조건 확인 (아닐 경우 등록 X)
         if (mendatoryNum != 3 && mendatoryNum != 4 && mendatoryNum != 5) {
             System.out.println("수강생 등록 실패!");
@@ -363,6 +364,7 @@ public class CampManagementApplication {
         //선택 과목 개수 입력
         System.out.print("선택 과목 개수 입력 (2~4개): ");
         int choiceNum = sc.nextInt();
+        sc.nextLine();
         //선택 과목 개수 조건 확인 (아닐 경우 등록 X)
         if (choiceNum != 2 && choiceNum != 3 && choiceNum != 4) {
             System.out.println("수강생 등록 실패!");
@@ -384,7 +386,7 @@ public class CampManagementApplication {
         //필수 과목 등록
         for (int i = 0; i < mendatoryNum; i++) {
             System.out.print("필수 과목 입력: ");
-            String mendatoryName = sc.next();
+            String mendatoryName = sc.nextLine();
             //필수 과목 검증
             if (!(mendatoryNames.contains(mendatoryName))) {
                 System.out.println("수강생 등록 실패!");
@@ -401,7 +403,6 @@ public class CampManagementApplication {
         //선택 과목 등록
         for (int i = 0; i < choiceNum; i++) {
             System.out.print("선택 과목 입력: ");
-            sc.next();
             String choiceName = sc.nextLine();
             //필수 과목 검증
             if (!(choiceNames.contains(choiceName))) {
