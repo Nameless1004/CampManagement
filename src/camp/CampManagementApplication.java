@@ -338,13 +338,10 @@ public class CampManagementApplication {
 
         // null값 처리해주기
         if(student == null) {
-            for(int i = 0; i < 2; i++) {
-                System.out.println("학생을 찾을 수 없습니다.");
-                inquireStudentInfo();
-                return;
-            }
-            // 프로그램 종료
-            System.exit(0);
+            System.out.println("학생을 찾을 수 없습니다.");
+            //inquireStudentInfo();
+            // 종료
+            return;
         }
         // 출력
         System.out.println("학생 고유 번호: " + student.getStudentId());
@@ -683,6 +680,8 @@ public class CampManagementApplication {
             input2 = sc.nextInt();
             if (input2 < 0 || input2 > 10) {
                 System.out.println("회차의 범위는 1 ~ 10 입니다.");
+                // 종료
+                return;
             } else {
                 break;
             }
@@ -696,6 +695,8 @@ public class CampManagementApplication {
             input3 = sc.nextInt();
             if (input3 < 0 || input3 > 100) {
                 System.out.println("점수의 범위는 0 ~ 100점 입니다.");
+                // 종료
+                return;
             } else {
                 break;
             }
@@ -715,8 +716,8 @@ public class CampManagementApplication {
             System.out.println("과목 고유번호 : " + input1 + "  " + "회차 번호 : " + input2 + "  " + "수정된 점수 : " + input3);
         } else {
             System.out.println("점수 수정에 실패했습니다.");
-            // 프로그램 종료
-            System.exit(0);
+            // 종료
+            return;
         }
         System.out.println();
         underline();
