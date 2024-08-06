@@ -384,7 +384,7 @@ public class CampManagementApplication {
         //선택 과목 개수 입력
         System.out.print("선택 과목 개수 입력 (2~4개): ");
         int choiceNum = sc.nextInt();
-        //선택 과목 개수 조건 확인
+        //선택 과목 개수 조건 확인 (아닐 경우 등록 X)
         if (choiceNum != 2 && choiceNum != 3 && choiceNum != 4) {
             System.out.println("수강생 등록 실패!");
             underline();
