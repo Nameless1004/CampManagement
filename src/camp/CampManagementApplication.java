@@ -173,10 +173,12 @@ public class CampManagementApplication {
     }
 
     private static void updateStudentInfo() {
+        underline();
         System.out.println("수강생의 정보를 수정합니다...");
+        //수정할 수강생 Id 입력
         String studentId = getStudentId();
         Student student = null;
-
+        //데이터베이스에 입력받은 Id와 일치하는 수강생 찾기
         for (Student s : studentStore) {
             if (s.getStudentId().equals(studentId)) {
                 student = s;
@@ -184,13 +186,12 @@ public class CampManagementApplication {
             }
         }
 
-        if (student == null) {
+        if(student == null){
             return;
         }
-
+        //수정할 이름,상태 입력 받기
         System.out.print("이름: ");
         String newName = sc.next();
-
         System.out.print("상태: ");
 
         try {
@@ -203,7 +204,7 @@ public class CampManagementApplication {
         } catch (IllegalArgumentException e) {
             System.out.println("state입력이 잘못되었습니다.");
         }
-
+        underline();
     }
 
     private static void setStudentState() {
@@ -368,25 +369,40 @@ public class CampManagementApplication {
     // 수강생 등록
     private static void createStudent() {
         //수강생 이름 및 고유번호 등록
-        System.out.println("\n수강생을 등록합니다...");
+        underline();
+        System.out.println("수강생을 등록합니다...");
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
-        // 기능 구현 (필수 과목, 선택 과목)
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
-        System.out.print("필수 과목 개수 입력: ");
+        //필수 과목 입력
+        System.out.print("필수 과목 개수 입력 (3~5개): ");
         int mendatoryNum = sc.nextInt();
+        //필수 과목 조건 확인 (아닐 경우 등록 X)
+        if (mendatoryNum != 3 && mendatoryNum != 4 && mendatoryNum != 5) {
+            System.out.println("수강생 등록 실패!");
+            underline();
+            return;
+        }
+        //선택 과목 입력
+        System.out.print("선택 과목 개수 입력 (2~4개): ");
+        int choiceNum = sc.nextInt();
+        //선택 과목 조건 확인
+        if (choiceNum != 2 && choiceNum != 3 && choiceNum != 4) {
+            System.out.println("수강생 등록 실패!");
+            underline();
+            return;
+        }
+        //필수 과목 등록
         for (int i = 0; i < mendatoryNum; i++) {
             System.out.print("필수 과목 입력: ");
             String mendatoryName = sc.next();
             for (Subject s : subjectStore) {
                 if (s.getSubjectName().equals(mendatoryName)) {
-                    student.addSubject(s); //필수 과목 등록
+                    student.addSubject(s);
                 }
             }
         }
-
-        System.out.print("선택 과목 개수 입력: ");
-        int choiceNum = sc.nextInt();
+        //선택 과목 등록
         for (int i = 0; i < choiceNum; i++) {
             System.out.print("선택 과목 입력: ");
             sc.next();
@@ -397,11 +413,10 @@ public class CampManagementApplication {
                 }
             }
         }
-
-
         // 기능 구현
         studentStore.add(student);
-        System.out.println("수강생 등록 성공!\n");
+        System.out.println("수강생 등록 성공!");
+        underline();
     }
 
 
