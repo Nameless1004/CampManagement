@@ -176,7 +176,6 @@ public class CampManagementApplication {
 
     private static void updateStudentInfo() {
         System.out.println("수강생의 정보를 수정합니다...");
-        printStudentList();
         String studentId = getStudentId();
         Student student = null;
 
@@ -212,7 +211,6 @@ public class CampManagementApplication {
 
     private static void setStudentState() {
         System.out.println("수강생의 상태를 지정합니다...");
-        printStudentList();
         String studentId = getStudentId();
         System.out.print("상태: Green, Yellow, Red 중에 입력하시오: ");
         String state = sc.next();
@@ -240,7 +238,6 @@ public class CampManagementApplication {
         // 학생데이터가 들어가있는 곳이 어디어디어디일까요
         // scoreStore, studentStore, subjectScore
 
-        printStudentList();
         // 학생 아이디를 입력받는다.
         String studentId = getStudentId();
 
@@ -315,7 +312,6 @@ public class CampManagementApplication {
     // 수강생 정보 조회
     private static void inquireStudentInfo() {
         System.out.println("\n수강생 정보를 조회합니다...");
-        printStudentList();
         String inputID = getStudentId();
         Student student = null;
 
@@ -430,7 +426,6 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 평균 등급 조회
     private static void inquireAvgDegreeBySubject() {
-        printStudentList();
         String studentId = getStudentId();
         List<Score> studentScoreList = getScoreListByStudent(studentId);
 
@@ -494,13 +489,13 @@ public class CampManagementApplication {
     }
 
     private static String getStudentId() {
+        printStudentList();
         System.out.print("\n관리할 수강생의 번호를 입력하시오...");
         return sc.next();
     }
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
-        printStudentList();
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         System.out.println("시험 점수를 등록합니다...");
         List<Subject> subjectList = getSubjectListByStudent(studentId);
@@ -579,7 +574,6 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() {
-        printStudentList();
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         printSubjectLists(studentId);
         // 기능 구현 (수정할 과목 및 회차, 점수)
@@ -638,7 +632,6 @@ public class CampManagementApplication {
 
     // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() {
-        printStudentList();
         String studentId = getStudentId();
 
         // 조회할 과목 선택
@@ -682,4 +675,7 @@ public class CampManagementApplication {
         return scoreStore.stream().filter(x -> x.getStudentId().equals(studentId)).toList();
     }
 
+    private void underline(){
+        System.out.println("============================");
+    }
 }
