@@ -311,7 +311,10 @@ public class CampManagementApplication {
 
     // 수강생 정보 조회
     private static void inquireStudentInfo() {
-        System.out.println("\n수강생 정보를 조회합니다...");
+        underline();
+        System.out.println();
+        System.out.println("~~수강생 정보 조회~~");
+        System.out.println("수강생 정보를 조회합니다...");
         String inputID = getStudentId();
         Student student = null;
 
@@ -337,6 +340,8 @@ public class CampManagementApplication {
         printSubjectLists(student.getStudentId());
 
         System.out.println("\n수강생 정보 조회 성공!");
+        System.out.println();
+        underline();
     }
 
     // 수강생 등록
@@ -574,6 +579,9 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() {
+        underline();
+        System.out.println();
+        System.out.println("~~수강생의 과목별 회차 점수 수정~~");
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         printSubjectLists(studentId);
         // 기능 구현 (수정할 과목 및 회차, 점수)
@@ -581,9 +589,6 @@ public class CampManagementApplication {
         System.out.print("번호 : ");
         // 과목의 고유 번호 얻음
         String input1 = sc.next();
-
-//
-
 
         int input2 = 0;
         while (true) {
@@ -612,8 +617,6 @@ public class CampManagementApplication {
         }
         System.out.println("시험 점수를 수정합니다...");
         // 기능 구현
-        // var 부분을 뭘로 구현해야 제대로 실행되는 지 모르겠음.
-        // 오류 처리 어떻게 진행할지 확인하기
         int finalInput = input2;
         Optional<Score> result = scoreStore.stream()
                 .filter(x -> x.getStudentId().equals(studentId) &&
@@ -628,6 +631,8 @@ public class CampManagementApplication {
         } else {
             System.out.println("점수 수정에 실패했습니다.");
         }
+        System.out.println();
+        underline();
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
@@ -675,7 +680,7 @@ public class CampManagementApplication {
         return scoreStore.stream().filter(x -> x.getStudentId().equals(studentId)).toList();
     }
 
-    private void underline(){
+    private static void underline(){
         System.out.println("============================");
     }
 }
