@@ -235,11 +235,9 @@ public class CampManagementApplication {
 
     // 수강생 삭제
     private static void deleteStudent() {
+        System.out.println(" ");
+        underline();
         System.out.println("수강생을 삭제합니다..!");
-
-        // 저희가 학생 데이터가 얽혀있는곳에서 삭제를 해줘야 한다.
-        // 학생데이터가 들어가있는 곳이 어디어디어디일까요
-        // scoreStore, studentStore, subjectScore
 
         // 학생 아이디를 입력받는다.
         String studentId = getStudentId();
@@ -251,40 +249,24 @@ public class CampManagementApplication {
             return;
         }
 
-        // studentStore -> 학생 저장소
-        // 여기서 studentId가 같은 student를 삭제하면 되겠쬬 << 조건
-        // for
+        // studentId가 같은 student를 삭제하기 위해서
         for (int i = studentStore.size() - 1; i >= 0; i--) {
-            // i번째 요소를 store에서 가져와서 변수에 담아주세요. hint : get
-            Student currentStudent = studentStore.get(i);
-            // 만약에 현재 학생의 아이디가 입력받은 아이디 라면
-            if (currentStudent.getStudentId().equals(studentId)) {
-                // 저희가 삭제해야할 student를 찾은거죠
+            Student currentStudent = studentStore.get(i); // i번째 요소를 studentStore에서 가져온 후 변수에 담기
+            // 만약, 현재 학생의 아이디가 입력받은 아이디와 같다면
+            if(currentStudent.getStudentId().equals(studentId)) {
+                // 찾았다 이 놈! 지워버리기.
                 studentStore.remove(i);
             }
-        }
-
-        // scoreStore도 동일하게 진행을 해주시면 됩니다.
-        // 외우시면 안되고 이해를 하고 가셔야됩니다.
-        // [0] [1] [2] [3] [4] : index
-        // size = 5 => 4번이마지막입니다. 왜냐 -> index 0부터 시작이기 때문에
-        // size - 1을 해줘야 마지막 인덱스입니다.
-        // String -> length();
-        // Array -> length;
-        // Collection -> size();
+        } // 위와 같음.
         for (int i = scoreStore.size() - 1; i >= 0; i--) {
-            // scoreStore -> Score 타입을 반환해야하는데
-            // 지금 받으시는 변수는 Student타입이어서 오류가 난다.
             Score currentScore = scoreStore.get(i);
             if (currentScore.getStudentId().equals(studentId)) {
                 scoreStore.remove(i);
             }
         }
-
-        // 위에 쓴 거랑 동일한 기능 ( 람다, Predicate )
-        // studentStore.removeIf( x -> x.getStudentId().equals(studentId));
-        // scoreStore.removeIf( x -> x.getStudentId().equals(studentId));
-        System.out.println("삭제 성공!...");
+        System.out.println("수강생 삭제 성공!...");
+        underline();
+        System.out.println(" ");
     }
 
     // 상태별 수강생 목록 조회
@@ -760,6 +742,8 @@ public class CampManagementApplication {
 
         // 조회할 과목 선택
         printSubjectLists(studentId);
+        System.out.println(" ");
+        underline();
         System.out.println("조회할 과목을 선택해주세요.(과목 ID 입력): ");
         String selectSubjectId = sc.next();
 
@@ -770,17 +754,26 @@ public class CampManagementApplication {
             Score currentScore = scoreStore.get(i);
             if (currentScore.getStudentId().equals(studentId) && currentScore.getSubjectId().equals(selectSubjectId)) {
                 scoreList.add(currentScore);
-            }
+            } // currentScore의 studentId가 입력한 StudentId와 같은지 확인합니다 && currentScore의 selectSubjectId가 getSubjectId와 같은지 확인합니다.
+            // 두 조건이 모두 참일경우 scoreList에 담으십시오.
+        }
+
+        if(scoreList.isEmpty()) {
+            System.out.println("해당 과목에 대한 성적을 찾을 수 없습니다.");
+            return;
         }
 
         scoreList.sort(Comparator.comparingInt(Score::getRound));
-        for (int i = 0; i < scoreList.size(); ++i) {
+        for (int i = 0; i < scoreList.size(); ++i) { //i는 0인데 scoreList의 사이즈가 i보다 커질때까지 i를 하나씩 더한다
             Score currentScore = scoreList.get(i);
             int round = currentScore.getRound();
             String grade = currentScore.getGrade();
             System.out.println(round + "회차 : " + grade + "등급");
         }
-        System.out.println("회차별 등급을 조회합니다...");
+        System.out.println("회차별 등급 조회 성공!");
+        underline();
+        System.out.println(" ");
+
     }
 
     // 학생아이디로 수강중인 과목 목록 가져오기
@@ -798,7 +791,6 @@ public class CampManagementApplication {
     private static List<Score> getScoreListByStudent(String studentId) {
         return scoreStore.stream().filter(x -> x.getStudentId().equals(studentId)).toList();
     }
-
     private static void underline() {
         System.out.println("================================");
     }
