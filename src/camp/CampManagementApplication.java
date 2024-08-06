@@ -169,6 +169,12 @@ public class CampManagementApplication {
         System.out.println("수강생의 정보를 수정합니다...");
         //수정할 수강생 Id 입력
         String studentId = getStudentId();
+        if(isInValidStudentId(studentId)){
+            System.out.println("수강생 id가 존재하지 않습니다.");
+            System.out.println();
+            return;
+        }
+
         Student student = null;
         //데이터베이스에 입력받은 Id와 일치하는 수강생 찾기
         for (Student s : studentStore) {
@@ -205,7 +211,7 @@ public class CampManagementApplication {
 
         System.out.println("수강생의 상태를 지정합니다...");
         String studentId = getStudentId();
-        if(studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst().isEmpty()){
+        if(isInValidStudentId(studentId)){
             System.out.println("수강생 id가 존재하지 않습니다.");
             underline();
             System.out.println();
@@ -215,16 +221,11 @@ public class CampManagementApplication {
         System.out.print("상태: Green, Yellow, Red 중에 입력하시오: ");
         String state = sc.next();
 
-
         try {
             StudentState studentState = StudentState.valueOf(state);
             Optional<Student> find = studentStore.stream().filter(x -> x.getStudentId().equals(studentId)).findFirst();
-            if (find.isPresent()) {
-                Student student = find.get();
-                student.setState(studentState);
-            } else {
-                System.out.println("존재하지 않는 수강생 id입니다.");
-            }
+            Student student = find.get();
+            student.setState(studentState);
         } catch (IllegalArgumentException e) {
             System.out.println("잘못된 상태 입력입니다.");
         } finally {
@@ -243,8 +244,7 @@ public class CampManagementApplication {
         String studentId = getStudentId();
 
         //studentId 있는지 처리
-        Optional<Student> find = studentStore.stream().filter(x -> x.getStudentId().equals(studentId)).findFirst();
-        if (find.isEmpty()) {
+        if (isInValidStudentId(studentId)) {
             System.out.println("해당 id인 학생이 존재하지 않습니다.");
             return;
         }
@@ -307,6 +307,13 @@ public class CampManagementApplication {
         System.out.println();
         System.out.println("~~수강생 정보를 조회합니다.~~");
         String inputID = getStudentId();
+
+        if(isInValidStudentId(inputID)){
+            System.out.println("수강생 id가 존재하지 않습니다.");
+            System.out.println();
+            return;
+        }
+
         Student student = null;
 
         // 입력받은 studentID값과 같은 student 찾기
@@ -475,6 +482,13 @@ public class CampManagementApplication {
         System.out.println(); underline();
         String studentId = getStudentId();
 
+        if(isInValidStudentId(studentId)){
+            System.out.println("수강생 id가 존재하지 않습니다.");
+            System.out.println();
+            return;
+        }
+
+
         List<Score> studentScoreList = getScoreListByStudent(studentId);
         if(studentScoreList.isEmpty()) {
             System.out.println("\n입력된 수강생의 점수가 없습니다.\n");
@@ -576,7 +590,7 @@ public class CampManagementApplication {
         System.out.println("시험 점수를 등록합니다...");
 
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
-        if(studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst().isEmpty()){
+        if(isInValidStudentId(studentId)){
             System.out.println("존재하지 않는 수강생 id입니다.");
             underline();
             return;
@@ -679,6 +693,13 @@ public class CampManagementApplication {
         System.out.println();
         System.out.println("~~수강생의 과목별 회차 점수 수정합니다.~~");
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
+
+        if(isInValidStudentId(studentId)){
+            System.out.println("수강생 id가 존재하지 않습니다.");
+            System.out.println();
+            return;
+        }
+
         printSubjectLists(studentId);
         // 기능 구현 (수정할 과목 및 회차, 점수)
         System.out.println("수정할 과목의 고유 번호를 써주세요.");
@@ -739,8 +760,16 @@ public class CampManagementApplication {
 
     // 수강생의 특정 과목 회차별 등급 조회
     private static void inquireRoundGradeBySubject() {
+        System.out.println();
+        underline();
+        System.out.println("수강생의 특정 과목 회차별 등급을 조회합니다...");
         String studentId = getStudentId();
 
+        if(isInValidStudentId(studentId)){
+            System.out.println("수강생 id가 존재하지 않습니다.");
+            System.out.println();
+            return;
+        }
         // 조회할 과목 선택
         printSubjectLists(studentId);
         System.out.println(" ");
@@ -786,6 +815,10 @@ public class CampManagementApplication {
         }
 
         return new ArrayList<>();
+    }
+
+    private static boolean isInValidStudentId(String studentId){
+        return studentStore.stream().noneMatch(x -> x.getStudentId().equals(studentId));
     }
 
     // 학생아이디로 점수 데이터들 가져오기
