@@ -311,10 +311,12 @@ public class CampManagementApplication {
 
     // 수강생 정보 조회
     private static void inquireStudentInfo() {
-        System.out.println("\n수강생 정보를 조회합니다...");
+        underline();
+        System.out.println();
+        System.out.println("~~수강생 정보를 조회합니다.~~");
         String inputID = getStudentId();
         Student student = null;
-
+        // 입력받은 studentID값과 같은 student 찾기
         for(int index = 0; index < studentStore.size(); index++) {
             Student s = studentStore.get(index);
             if(s.getStudentId().equals(inputID)) {
@@ -322,21 +324,26 @@ public class CampManagementApplication {
                 break;
             }
         }
-
+        // null값 처리해주기
         if(student == null) {
-            System.out.println("학생을 찾을 수 없습니다.");
-            inquireStudentInfo();
-            return;
+            for(int i = 0; i < 2; i++) {
+                System.out.println("학생을 찾을 수 없습니다.");
+                inquireStudentInfo();
+                return;
+            }
+            // 프로그램 종료
+            System.exit(0);
         }
-
+        // 출력
         System.out.println("학생 고유 번호: " + student.getStudentId());
         System.out.println("학생 이름 : " + student.getStudentName());
         System.out.println("학생 상태 : " + student.getState());
 
-        // 선택한 과목리스트 출력 기능은 이미 존재하므로 찾아서 사용
         printSubjectLists(student.getStudentId());
 
         System.out.println("\n수강생 정보 조회 성공!");
+        System.out.println();
+        underline();
     }
 
     // 수강생 등록
@@ -574,6 +581,9 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 회차 점수 수정
     private static void updateRoundScoreBySubject() {
+        underline();
+        System.out.println();
+        System.out.println("~~수강생의 과목별 회차 점수 수정합니다.~~");
         String studentId = getStudentId(); // 관리할 수강생 고유 번호
         printSubjectLists(studentId);
         // 기능 구현 (수정할 과목 및 회차, 점수)
@@ -581,10 +591,7 @@ public class CampManagementApplication {
         System.out.print("번호 : ");
         // 과목의 고유 번호 얻음
         String input1 = sc.next();
-
-//
-
-
+        // 과목 회차 번호
         int input2 = 0;
         while (true) {
             System.out.println("수정할 과목의 회차 번호를 써주세요.");
@@ -597,7 +604,7 @@ public class CampManagementApplication {
                 break;
             }
         }
-
+        // 과목 점수
         int input3 = 0;
         while (true) {
             System.out.println("점수를 써주세요.");
@@ -612,22 +619,24 @@ public class CampManagementApplication {
         }
         System.out.println("시험 점수를 수정합니다...");
         // 기능 구현
-        // var 부분을 뭘로 구현해야 제대로 실행되는 지 모르겠음.
-        // 오류 처리 어떻게 진행할지 확인하기
         int finalInput = input2;
         Optional<Score> result = scoreStore.stream()
                 .filter(x -> x.getStudentId().equals(studentId) &&
                         x.getSubjectId().equals(input1) &&
                         x.getRound() == finalInput)
                 .findFirst();
-        //
+
         if (result.isPresent()) { // 값이 있냐 없냐
             result.get().setScore(input3); // 값이 있는지 없는지 확인을 했기 떄문에 get()을 바로 쓸 수 있음
             System.out.println("점수 수정 성공!");
             System.out.println("과목 고유번호 : " + input1 + "  " + "회차 번호 : " + input2 + "  " + "수정된 점수 : " + input3);
         } else {
             System.out.println("점수 수정에 실패했습니다.");
+            // 프로그램 종료
+            System.exit(0);
         }
+        System.out.println();
+        underline();
     }
 
     // 수강생의 특정 과목 회차별 등급 조회
@@ -675,7 +684,7 @@ public class CampManagementApplication {
         return scoreStore.stream().filter(x -> x.getStudentId().equals(studentId)).toList();
     }
 
-    private void underline(){
+    private static void underline(){
         System.out.println("============================");
     }
 }
