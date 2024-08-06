@@ -374,40 +374,71 @@ public class CampManagementApplication {
         System.out.print("수강생 이름 입력: ");
         String studentName = sc.next();
         Student student = new Student(sequence(INDEX_TYPE_STUDENT), studentName); // 수강생 인스턴스 생성 예시 코드
-        //필수 과목 입력
+        //과목 리스트 출력
+        System.out.println("---------------------------------");
+        System.out.println("【 " + "\u001B[34m" + "필수과목" + "\u001B[0m" + " 】 " + "Java/객체지향/Spring/JPA/MySQL");
+        System.out.println("【 " + "\u001B[34m" + "선택과목" + "\u001B[0m" + " 】 " + "디자인 패턴/Spring Security/Redis/MongoDB");
+        System.out.println("---------------------------------");
+
+        //필수 과목 개수 입력
         System.out.print("필수 과목 개수 입력 (3~5개): ");
         int mendatoryNum = sc.nextInt();
-        //필수 과목 조건 확인 (아닐 경우 등록 X)
+        //필수 과목 개수 조건 확인 (아닐 경우 등록 X)
         if (mendatoryNum != 3 && mendatoryNum != 4 && mendatoryNum != 5) {
             System.out.println("수강생 등록 실패!");
             underline();
             return;
         }
-        //선택 과목 입력
+        //선택 과목 개수 입력
         System.out.print("선택 과목 개수 입력 (2~4개): ");
         int choiceNum = sc.nextInt();
-        //선택 과목 조건 확인
+        //선택 과목 개수 조건 확인
         if (choiceNum != 2 && choiceNum != 3 && choiceNum != 4) {
             System.out.println("수강생 등록 실패!");
             underline();
             return;
         }
+        List<String> mendatoryNames = new ArrayList<>();
+        mendatoryNames.add("Java");
+        mendatoryNames.add("객체지향");
+        mendatoryNames.add("Spring");
+        mendatoryNames.add("JPA");
+        mendatoryNames.add("MySQL");
+        List<String> choiceNames = new ArrayList<>();
+        choiceNames.add("디자인 패턴");
+        choiceNames.add("Spring Security");
+        choiceNames.add("Redis");
+        choiceNames.add("MongoDB");
+
         //필수 과목 등록
         for (int i = 0; i < mendatoryNum; i++) {
             System.out.print("필수 과목 입력: ");
             String mendatoryName = sc.next();
+            //필수 과목 검증
+            if (!(mendatoryNames.contains(mendatoryName))) {
+                System.out.println("수강생 등록 실패!");
+                underline();
+                return;
+            }
             for (Subject s : subjectStore) {
                 if (s.getSubjectName().equals(mendatoryName)) {
-                    student.addSubject(s);
+                    student.addSubject(s); //필수 과목 등록
                 }
             }
+
         }
         //선택 과목 등록
         for (int i = 0; i < choiceNum; i++) {
             System.out.print("선택 과목 입력: ");
             sc.next();
             String choiceName = sc.nextLine();
-            for (Subject s : subjectStore) {
+            //필수 과목 검증
+            if (!(choiceNames.contains(choiceName))) {
+                System.out.println("수강생 등록 실패!");
+                underline();
+                return;
+            }
+            for (Subject s : subjectStore) { //선택 과목이 맞는지 확인
                 if (s.getSubjectName().equals(choiceName)) {
                     student.addSubject(s); //선택 과목 등록
                 }
