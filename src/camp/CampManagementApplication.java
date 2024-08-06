@@ -16,25 +16,22 @@ import java.util.*;
  * 구현에 도움을 주기위한 Base 프로젝트입니다. 자유롭게 이용해주세요!
  */
 public class CampManagementApplication {
+    private static final String INDEX_TYPE_STUDENT = "ST";
+    private static final String INDEX_TYPE_SUBJECT = "SU";
+    private static final String INDEX_TYPE_SCORE = "SC";
     // 데이터 저장소
     private static List<Student> studentStore;
     private static List<Subject> subjectStore;
     private static List<Score> scoreStore;
-
     // 과목 타입
-    private static String SUBJECT_TYPE_MANDATORY = "MANDATORY";
-    private static String SUBJECT_TYPE_CHOICE = "CHOICE";
-
+    private static final String SUBJECT_TYPE_MANDATORY = "MANDATORY";
+    private static final String SUBJECT_TYPE_CHOICE = "CHOICE";
     // index 관리 필드
     private static int studentIndex;
-    private static final String INDEX_TYPE_STUDENT = "ST";
     private static int subjectIndex;
-    private static final String INDEX_TYPE_SUBJECT = "SU";
     private static int scoreIndex;
-    private static final String INDEX_TYPE_SCORE = "SC";
-
     // 스캐너
-    private static Scanner sc = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
         setInitData();
@@ -120,7 +117,8 @@ public class CampManagementApplication {
     private static void displayMainView() throws InterruptedException {
         boolean flag = true;
         while (flag) {
-            System.out.println("\n==================================");
+            System.out.println();
+            underline();
             System.out.println("내일배움캠프 수강생 관리 프로그램 실행 중...");
             System.out.println("1. 수강생 관리");
             System.out.println("2. 점수 관리");
@@ -144,7 +142,7 @@ public class CampManagementApplication {
     private static void displayStudentView() {
         boolean flag = true;
         while (flag) {
-            System.out.println("==================================");
+            underline();
             System.out.println("수강생 관리 실행 중...");
             System.out.println("1. 수강생 등록");
             System.out.println("2. 수강생 목록 조회");
@@ -186,7 +184,7 @@ public class CampManagementApplication {
             }
         }
 
-        if(student == null){
+        if (student == null) {
             return;
         }
 
@@ -204,14 +202,23 @@ public class CampManagementApplication {
             System.out.println("수강생의 정보가 수정되었습니다.");
         } catch (IllegalArgumentException e) {
             System.out.println("state입력이 잘못되었습니다.");
-            return;
         }
 
     }
 
     private static void setStudentState() {
+        System.out.println();
+        underline();
+
         System.out.println("수강생의 상태를 지정합니다...");
         String studentId = getStudentId();
+        if(studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst().isEmpty()){
+            System.out.println("수강생 id가 존재하지 않습니다.");
+            underline();
+            System.out.println();
+            return;
+        }
+
         System.out.print("상태: Green, Yellow, Red 중에 입력하시오: ");
         String state = sc.next();
 
@@ -219,14 +226,17 @@ public class CampManagementApplication {
         try {
             StudentState studentState = StudentState.valueOf(state);
             Optional<Student> find = studentStore.stream().filter(x -> x.getStudentId().equals(studentId)).findFirst();
-            if(find.isPresent()) {
+            if (find.isPresent()) {
                 Student student = find.get();
                 student.setState(studentState);
-            } else{
+            } else {
                 System.out.println("존재하지 않는 수강생 id입니다.");
             }
         } catch (IllegalArgumentException e) {
             System.out.println("잘못된 상태 입력입니다.");
+        } finally {
+            underline();
+            System.out.println();
         }
     }
 
@@ -242,8 +252,8 @@ public class CampManagementApplication {
         String studentId = getStudentId();
 
         //studentId 있는지 처리
-        Optional<Student> find = studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst();
-        if(find.isEmpty()) {
+        Optional<Student> find = studentStore.stream().filter(x -> x.getStudentId().equals(studentId)).findFirst();
+        if (find.isEmpty()) {
             System.out.println("해당 id인 학생이 존재하지 않습니다.");
             return;
         }
@@ -255,7 +265,7 @@ public class CampManagementApplication {
             // i번째 요소를 store에서 가져와서 변수에 담아주세요. hint : get
             Student currentStudent = studentStore.get(i);
             // 만약에 현재 학생의 아이디가 입력받은 아이디 라면
-            if(currentStudent.getStudentId().equals(studentId)) {
+            if (currentStudent.getStudentId().equals(studentId)) {
                 // 저희가 삭제해야할 student를 찾은거죠
                 studentStore.remove(i);
             }
@@ -273,7 +283,7 @@ public class CampManagementApplication {
             // scoreStore -> Score 타입을 반환해야하는데
             // 지금 받으시는 변수는 Student타입이어서 오류가 난다.
             Score currentScore = scoreStore.get(i);
-            if(currentScore.getStudentId().equals(studentId)) {
+            if (currentScore.getStudentId().equals(studentId)) {
                 scoreStore.remove(i);
             }
         }
@@ -286,26 +296,33 @@ public class CampManagementApplication {
 
     // 상태별 수강생 목록 조회
     private static void inquireStudentListByState() {
-        System.out.println("상태별 수강생 목록을 조회합니다...");
+        try {
+            System.out.println();
+            underline();
 
-        System.out.print("조회할 상태(Green, Yellow, Red): ");
-        String state = sc.next();
-        try{
+            System.out.println("상태별 수강생 목록을 조회합니다...");
+
+            System.out.print("조회할 상태(Green, Yellow, Red): ");
+            String state = sc.next();
+
             System.out.println("---------------------------------");
             System.out.println("【 " + "\u001B[34m" + state + " 수강생 리스트 ( ID | NAME )" + "\u001B[0m" + " 】 ");
             System.out.println("---------------------------------");
             StudentState studentState = StudentState.valueOf(state);
-            List<Student> students = studentStore.stream().filter(x-> x.getState() == studentState).toList();
-            if(students.isEmpty()){
-                System.out.println(studentState.name() +"인 학생이 없습니다.");
+            List<Student> students = studentStore.stream().filter(x -> x.getState() == studentState).toList();
+            if (students.isEmpty()) {
+                System.out.println(studentState.name() + "인 학생이 없습니다.");
             } else {
-                for(Student student : students){
+                for (Student student : students) {
                     System.out.printf("   %-4s   |", student.getStudentId());
                     System.out.printf("  %-6s  %n", student.getStudentName());
                 }
             }
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println("잘못된 상태 입력입니다.");
+        }  finally {
+            underline();
+            System.out.println();
         }
     }
 
@@ -316,14 +333,16 @@ public class CampManagementApplication {
         System.out.println("~~수강생 정보를 조회합니다.~~");
         String inputID = getStudentId();
         Student student = null;
+
         // 입력받은 studentID값과 같은 student 찾기
         for(int index = 0; index < studentStore.size(); index++) {
             Student s = studentStore.get(index);
-            if(s.getStudentId().equals(inputID)) {
+            if (s.getStudentId().equals(inputID)) {
                 student = s;
                 break;
             }
         }
+
         // null값 처리해주기
         if(student == null) {
             for(int i = 0; i < 2; i++) {
@@ -405,7 +424,7 @@ public class CampManagementApplication {
     private static void displayScoreView() {
         boolean flag = true;
         while (flag) {
-            System.out.println("==================================");
+            underline();
             System.out.println("점수 관리 실행 중...");
             System.out.println("1. 수강생의 과목별 시험 회차 및 점수 등록");
             System.out.println("2. 수강생의 과목별 회차 점수 수정");
@@ -436,7 +455,7 @@ public class CampManagementApplication {
         String studentId = getStudentId();
         List<Score> studentScoreList = getScoreListByStudent(studentId);
 
-        if(studentScoreList.isEmpty()) {
+        if (studentScoreList.isEmpty()) {
             System.out.println("입력된 수강생의 점수가 없습니다.");
             return;
         }
@@ -446,7 +465,7 @@ public class CampManagementApplication {
         for (Score score : studentScoreList) {
             int sumScore = score.getScore();
             int count = 1;
-            if(subjectScore.containsKey(score.getSubjectName())) {
+            if (subjectScore.containsKey(score.getSubjectName())) {
                 sumScore += subjectScore.get(score.getSubjectName())[0];
                 count = subjectScore.get(score.getSubjectName())[1] + 1;
             }
@@ -458,7 +477,11 @@ public class CampManagementApplication {
         for (Map.Entry<String, Integer[]> entry : subjectScore.entrySet()) {
             int avgScore = entry.getValue()[0] / entry.getValue()[1];
             String subjectType = "MANDATORY";
-            for (Score score : studentScoreList) if(score.getSubjectName().equals(entry.getKey())) { subjectType = score.getSubjectType(); break; }
+            for (Score score : studentScoreList)
+                if (score.getSubjectName().equals(entry.getKey())) {
+                    subjectType = score.getSubjectType();
+                    break;
+                }
             String avgGrade = Score.convertToGrade(subjectType, avgScore);
             System.out.println("과목명 : " + entry.getKey() + ", 평균 등급 : " + avgGrade);
         }
@@ -471,10 +494,10 @@ public class CampManagementApplication {
         List<Student> studentsByState = new ArrayList<>();
         // 특정 상태의 수강생들 리스트에 저장
         for (Student student : studentStore) {
-            if(student.getState() == StudentState.valueOf(state)) studentsByState.add(student);
+            if (student.getState() == StudentState.valueOf(state)) studentsByState.add(student);
         }
         // 특정 상태의 수강생들 존재 X
-        if(studentsByState.isEmpty()) {
+        if (studentsByState.isEmpty()) {
             System.out.println(state + "상태의 학생이 없습니다.");
             return;
         }
@@ -485,12 +508,12 @@ public class CampManagementApplication {
             int sumScore = 0;
             int count = 0;
             for (Score score : scoreListByStudent) {
-                if(!score.getSubjectType().equals("MANDATORY")) continue;
+                if (!score.getSubjectType().equals("MANDATORY")) continue;
                 sumScore += score.getScore();
                 count++;
             }
-            if(count == 0) continue;
-            String avgGrade = Score.convertToGrade("MANDATORY", sumScore/count);
+            if (count == 0) continue;
+            String avgGrade = Score.convertToGrade("MANDATORY", sumScore / count);
             System.out.println(student.getStudentName() + "학생 : " + avgGrade);
         }
     }
@@ -503,19 +526,43 @@ public class CampManagementApplication {
 
     // 수강생의 과목별 시험 회차 및 점수 등록
     private static void createScore() {
-        String studentId = getStudentId(); // 관리할 수강생 고유 번호
+        System.out.println();
+        underline();
+
         System.out.println("시험 점수를 등록합니다...");
+
+        String studentId = getStudentId(); // 관리할 수강생 고유 번호
+        if(studentStore.stream().filter(x->x.getStudentId().equals(studentId)).findFirst().isEmpty()){
+            System.out.println("존재하지 않는 수강생 id입니다.");
+            underline();
+            return;
+        }
+
         List<Subject> subjectList = getSubjectListByStudent(studentId);
         printSubjectLists(studentId);
+
+        if(subjectList.isEmpty()) {
+            underline();
+            System.out.println();
+            return;
+        }
 
         System.out.print("등록할 과목을 선택해주세요(id 입력): ");
         String selectedSubjectId = sc.next();
         Subject selectedSubject = subjectList.stream().filter(x -> x.getSubjectId().equals(selectedSubjectId)).findFirst().orElse(null);
 
+        if (selectedSubject == null) {
+            System.out.println("잘못된 과목 id 입니다. id : " + selectedSubjectId);
+            underline();
+            System.out.println();
+            return;
+        }
+
         int round = 0;
         while (true) {
             System.out.print("등록할 회차를 입력해주세요: ");
             round = Integer.parseInt(sc.next());
+
             List<Score> scoreList = getScoreListByStudent(studentId);
             int temp = round;
             if (scoreList.stream().anyMatch(x -> x.getSubjectId().equals(selectedSubject.getSubjectId()) && x.getRound() == temp)) {
@@ -542,6 +589,8 @@ public class CampManagementApplication {
         scoreStore.add(scoreData);
 
         System.out.println("\n점수 등록 성공!");
+        underline();
+        System.out.println();
     }
 
 
@@ -550,6 +599,7 @@ public class CampManagementApplication {
         System.out.println("---------------------------------");
         System.out.println("【 " + "\u001B[34m" + "수강생 리스트 ( ID | NAME )" + "\u001B[0m" + " 】 ");
         System.out.println("---------------------------------");
+
         for (int i = 0; i < studentStore.size(); i++) {
             Student subject = studentStore.get(i);
             System.out.printf("   %-4s   |", subject.getStudentId());
@@ -565,7 +615,7 @@ public class CampManagementApplication {
         System.out.println("【 " + "\u001B[34m" + studentId + "\u001B[0m" + " 】 " + "수강 과목 리스트");
         System.out.println("---------------------------------");
 
-        if(subjectList.isEmpty()){
+        if (subjectList.isEmpty()) {
             System.out.println("수강중인 과목이 없습니다.");
             return;
         }
@@ -684,7 +734,7 @@ public class CampManagementApplication {
         return scoreStore.stream().filter(x -> x.getStudentId().equals(studentId)).toList();
     }
 
-    private static void underline(){
-        System.out.println("============================");
+    private static void underline() {
+        System.out.println("================================");
     }
 }
